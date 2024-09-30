@@ -10,6 +10,7 @@ namespace CSharpBaseCode
     {
         static void Main(string[] args)
         {
+            //第一个程序
             Console.WriteLine("Hello World!");
         }
     }
