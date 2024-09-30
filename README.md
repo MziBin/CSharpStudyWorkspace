@@ -22,6 +22,11 @@
 
 1.2.2
 
+### 1.3 程序的优化
+
+1.3.1 变量的数据类型选择合理，可以节约计算机的内存资源，减少开销。
+
+
 ## 2.CSharp简介
 
 CSharp中的框架，主要有.NET FormWork  ，  .NET Core 和 Xamarin
@@ -169,9 +174,13 @@ Release可以取消项目属性的pbd文件生成，不进行dubug调试。
 
 ![1727533949732](image/README/1727533949732.png)
 
-byte：0-255.注意默认的
+注意：byte默认是无符号的。0-255。
 
-short：0-65536
+#### 程序优化
+
+根据变量实际使用的情况来选择对于的数据类型，可以减少内存的开销，优化程序。
+
+
 
 #### 枚举enum
 
@@ -187,7 +196,54 @@ short：0-65536
 
 ### 常用API
 
-typeof
+#### typeof
+
+#### sizeof();获取数据类型的大小。
+
+`sizeof` 运算符返回给定类型的变量所占用的字节数。 `sizeof` 运算符的参数必须是一个[非托管类型](https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/builtin-types/unmanaged-types)的名称，或是一个[限定](https://learn.microsoft.com/zh-cn/dotnet/csharp/programming-guide/generics/constraints-on-type-parameters#unmanaged-constraint)为非托管类型的类型参数。
+
+`sizeof` 运算符需要[不安全](https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/unsafe)上下文。 但下表中的表达式在编译时被计算为相应的常数值，并不需要“不安全”的上下文：
+
+| Expression          | 常量值 |
+| ------------------- | ------ |
+| `sizeof(sbyte)`   | 1      |
+| `sizeof(byte)`    | 1      |
+| `sizeof(short)`   | 2      |
+| `sizeof(ushort)`  | 2      |
+| `sizeof(int)`     | 4      |
+| `sizeof(uint)`    | 4      |
+| `sizeof(long)`    | 8      |
+| `sizeof(ulong)`   | 8      |
+| `sizeof(char)`    | 2      |
+| `sizeof(float)`   | 4      |
+| `sizeof(double)`  | 8      |
+| `sizeof(decimal)` | 16     |
+| `sizeof(bool)`    | 1      |
+
+sizeof是不能够得到string类型所占的内存大小，因为[字符串长度](https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6&spm=1001.2101.3001.7020)是可变的、不定的。
+
+#### 转换类方法
+
+##### Convert 方法可以将任意类型转换成其他数据类型，注意是字符串类型转其他
+
+DateTime now2 = Convert.ToDateTime("2021-12-25"); 方法可以将字符串转换为日期类型
+
+Convert也可以转换数字类型。如Convert.ToLong();
+
+| Convert.ToInt16()    | 转换为整型(short)          |
+| -------------------- | -------------------------- |
+| Convert.ToInt32()    | 转换为整型(int)            |
+| Convert.ToInt64()    | 转换为整型(long)           |
+| Convert.ToChar()     | 转换为字符型(char)         |
+| Convert.ToString()   | 转换为字符串型(string)     |
+| Convert.ToDateTime() | 转换为日期型(datetime)     |
+| Convert.ToDouble()   | 转换为双精度浮点型(double) |
+| Conert.ToSingle()    | 转换为单精度浮点型(float)  |
+
+对于[整型](https://so.csdn.net/so/search?q=%E6%95%B4%E5%9E%8B&spm=1001.2101.3001.7020)和浮点型的强制数据类型操作也可以使用 Convert 方法代替，但是依然会损失存储范围大的数据类型的精度。
+
+
+
 
 ## 工具
 
@@ -197,8 +253,8 @@ ildasm.exe：现在。那天 自带的工具。存放目录：C:\Program Files (
 
 ## VS快捷键
 
-Ctrl+**L**:删除当前行 （这个很有用哦 因为大家常常会要删除多余的空行 哈哈 这组快捷键会让你省力不少）
+Ctrl+L:删除当前行 （这个很有用哦 因为大家常常会要删除多余的空行 哈哈 这组快捷键会让你省力不少）
 
-Ctrl+K:代码格式化
+Ctrl+K+f:代码格式化
 
 Ctrl+G：跳转指定代码行

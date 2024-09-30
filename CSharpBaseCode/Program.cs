@@ -13,8 +13,10 @@ namespace CSharpBaseCode
         {
             //第一个程序
             Console.WriteLine("Hello World!");
-            //第二个程序 数字类型
+            //第二个程序,数据类型
             new 数值类型().Printf();
+            new 非数字类型().Show();
+
         }
     }
 }
