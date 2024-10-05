@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace CSharpStudyStudyWorkspace
+namespace ProjectUITeach
 {
     internal static class Program
     {
@@ -16,7 +16,7 @@ namespace CSharpStudyStudyWorkspace
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new 事件的统一关联() );
+            Application.Run(new FrmMain());
         }
     }
 }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace 基本数据类型Library
 {
+    /// <summary>
+    /// 非数字类型基本使用
+    /// </summary>
     public class 非数字类型
     {
         //readonly修饰符声明的变量只能在声明时赋值，不能修改
@@ -13,6 +16,11 @@ namespace 基本数据类型Library
         readonly char charDefault;
         readonly string stringDefault;
         readonly DateTime dateTimeDefault;
+
+        #region 显示方法
+        /// <summary>
+        /// 展示基本的非数字类型使用
+        /// </summary>
         public void Show()
         {
             Console.WriteLine("bool类型的值有：{0}和{1} 默认是：{2}", false, true, boolDefault);
@@ -22,7 +30,7 @@ namespace 基本数据类型Library
             Console.WriteLine("string类型的占用字节数是不定的 默认是：{0}", stringDefault);
 
             DateTime now = DateTime.Now;
-            DateTime now1 = new DateTime(2024,09, 30, 16, 16, 23);
+            DateTime now1 = new DateTime(2024, 09, 30, 16, 16, 23);
             //Convert.ToDateTime方法可以将字符串转换为日期类型
             DateTime now2 = Convert.ToDateTime("2021-12-25");
 
@@ -40,6 +48,7 @@ namespace 基本数据类型Library
             obj = new DateTime(2021, 12, 25);
             Console.WriteLine(obj.GetType());
         }
+        #endregion
 
     }
 }
