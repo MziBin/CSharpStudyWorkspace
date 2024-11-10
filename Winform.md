@@ -92,6 +92,49 @@ Checked：默认选中还是不选中
 
 ### 5.4 dataGridView
 
+数据展示控件,要想展示数据，每列的属性都要设置3个，name，data，text。
+
+#### 基本使用：
+
+1.这个一般全部不勾。
+
+![1731208243906](image/Winform/1731208243906.png)
+
+2.美化
+
+2.1改背景色属性：BackgroundColor
+
+2.2
+
+RowHeadersWidthSizeMode:EnableResizing。行的宽高可调。
+
+ColumnHeadersHeightSizeMod:EnableResizing.列的宽高可调。
+
+ColumnHeadersHeight：30.根据变化调节宽高。
+
+ColumnHeadersBorderStyle：single。让用户的设置生效
+
+EnableHeadersVisualStyles：true
+
+GridColor：分割线颜色
+
+ColumnHeadersDefaultCellStyle：可以设置标题的字体大小，居中
+
+AlternatingRowsDefoultCellStyle：设置奇数行的样式。
+
+奇数行展示的样式，通过给某个列设置file属性，自动铺满，来占满整个了列。
+
+![1731210091308](image/Winform/1731210091308.png)
+
+#### 数据展示
+
+
+
+
+
+
+
+
 ### 5.5 容器
 
 #### 5.5.1 panel
@@ -163,11 +206,44 @@ textBox如何调整高度
         #endregion
 ```
 
-6.2
+### 6.2 窗体的放大缩小和关闭
+
+```
+ #region 窗体的大小切换和关闭
+ private void btnClose_Click(object sender, EventArgs e)
+ {
+     this.Close();
+ }
+
+ private void btnToggleMaximize_Click(object sender, EventArgs e)
+ {
+     //窗体放大或者缩小
+     if (this.WindowState == FormWindowState.Maximized)
+     {
+         this.WindowState = FormWindowState.Normal;
+     }
+     else if (this.WindowState == FormWindowState.Normal)
+     {
+         this.WindowState = FormWindowState.Maximized;
+     }
+ }
+
+ private void btnMinimize_Click(object sender, EventArgs e)
+ {
+     this.WindowState = FormWindowState.Minimized;
+ }
+ #endregion
+```
+
+s
+
+6.2.1
 
 ## 7.架构，程序的设计
 
 其实开发语法哪些不是最难的，多记下就好了，还是程序的设计，这个搞明白了，其实就差不多很厉害了。
+
+设计模式和编程思想，数据结构与算法
 
 ### 7.1 项目的分析
 

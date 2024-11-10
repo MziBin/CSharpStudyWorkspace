@@ -13,7 +13,19 @@ namespace CourseManageUI
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new FrmMain());
+            //显示登录窗体
+            FrmAdminLogin frmLogin = new FrmAdminLogin();
+            DialogResult result = frmLogin.ShowDialog();//模式窗体可以有返回值
+
+            //通过登录窗体的返回值，确定是否显示主窗体
+            if (result == DialogResult.OK)
+            {
+                Application.Run(new FrmMain());
+            }
+            else
+            {
+                Application.Exit();
+            }
         }
     }
 }

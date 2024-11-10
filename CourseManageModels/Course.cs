@@ -1,5 +1,8 @@
 ﻿namespace CourseManageModels
 {
+    /// <summary>
+    /// 课程
+    /// </summary>
     [Serializable]
     public class Course
     {

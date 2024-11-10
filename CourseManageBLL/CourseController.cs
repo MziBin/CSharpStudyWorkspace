@@ -3,7 +3,7 @@ using CourseManageModels;
 
 namespace CourseManageBLL
 {
-    public class CourseManageController
+    public class CourseController
     {
         private CourseServer courseService = new CourseServer();
 
