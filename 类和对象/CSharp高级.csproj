@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="主动垃圾回收.cs" />
     <Compile Include="方法的创建和调用.cs" />
     <Compile Include="构造函数的使用.cs" />
     <Compile Include="类的属性使用.cs" />
