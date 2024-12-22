@@ -37,7 +37,7 @@ namespace CSharpStudyStudyWorkspace
             {
                 if(ctr is Button)
                 {
-                    //TagwY属性可以存放自定义数据，可以用来区分不同控件，没有时，Tag属性为null
+                    //Tag属性可以存放自定义数据，可以用来区分不同控件，没有时，Tag属性为null
                     if(ctr.Tag == null)
                     {
                         ctr.Click += new System.EventHandler(this.button_Click);
