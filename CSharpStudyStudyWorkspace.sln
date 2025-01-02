@@ -52,6 +52,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMain1", "TestMain\TestM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "双色球项目", "双色球项目\双色球项目.csproj", "{16FBA765-4CC3-4EF5-A70D-6A92BEF0BF55}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp语法进阶部分", "CSharp语法进阶部分", "{4586BA96-A8F2-4C51-A06A-1B0647546FA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csharp进阶部分", "Csharp进阶部分\Csharp进阶部分.csproj", "{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -130,6 +134,10 @@ Global
 		{16FBA765-4CC3-4EF5-A70D-6A92BEF0BF55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16FBA765-4CC3-4EF5-A70D-6A92BEF0BF55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16FBA765-4CC3-4EF5-A70D-6A92BEF0BF55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -145,6 +153,7 @@ Global
 		{65626844-0D43-4F31-9648-F5E08DECB669} = {EFAA3B61-C417-44EE-A082-3032C7519DA0}
 		{10868BE4-894E-4FC0-A130-956EFA933AE3} = {2DE394F1-71B7-4610-B15D-F1870DA95585}
 		{16FBA765-4CC3-4EF5-A70D-6A92BEF0BF55} = {2DE394F1-71B7-4610-B15D-F1870DA95585}
+		{E5ED0C1D-03D7-4919-ACC5-519D06ECD9F0} = {4586BA96-A8F2-4C51-A06A-1B0647546FA5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FA1192B-BF96-4B86-A6F9-91972D7C9F53}
