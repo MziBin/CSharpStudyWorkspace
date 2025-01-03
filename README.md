@@ -1039,15 +1039,18 @@ throw new Exception();
 
 XML格式语法要求
 
+## 多线程
 
+多线程操作UI控件问题：
 
+多线程操控UI需要InvokeRequired来操作控件，不是同一个线程创建的UI，不能直接操作，必须通过InvokeRequired的Invoke操作
 
 
 ## 工具
 
 1.查看C#编译后的代码
 
-ildasm.exe：现在。那天 自带的工具。存放目录：C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\ildasm.exe
+ildasm.exe：现在自带的工具。存放目录：C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\ildasm.exe
 
 ## 设计
 
