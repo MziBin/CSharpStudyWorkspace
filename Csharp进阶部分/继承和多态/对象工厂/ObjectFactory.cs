@@ -18,7 +18,7 @@ namespace Csharp进阶部分.继承和多态.对象工厂
         /// <summary>
         /// ConfigurationManager。要在引用的程序集中添加System.configuration引用
         /// 在App.config中添加节点信息
-        /// assName填写bin生成的exe程序名称，className前面填写反射类的namespce空间名称。
+        /// assName填写bin生成的exe程序名称(就是程序集)，className前面填写反射类的namespce空间名称。
         /// </summary>
         private static string className = ConfigurationManager.AppSettings["className"];
         private static string assName = ConfigurationManager.AppSettings["assName"];

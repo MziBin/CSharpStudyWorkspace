@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="GB2312"?>
+<xmlRoot>
+  <Matrix>
+    <Center x="15000" y="0" />
+    <Angle>0</Angle>
+    <Row>3</Row>
+    <Col>3</Col>
+  </Matrix>
+  <Cells>
+    <cell0>
+      <Center x="-14.995926" y="-2.518524" />
+      <dbAngle>0.018664</dbAngle>
+      <nType>1</nType>
+    </cell0>
+    <cell1>
+      <Center x="-9.998962" y="-2.508728" />
+      <dbAngle>0.156741</dbAngle>
+      <nType>1</nType>
+    </cell1>
+    <cell2>
+      <Center x="-4.981201" y="-2.495571" />
+      <dbAngle>0.045426</dbAngle>
+      <nType>1</nType>
+    </cell2>
+    <cell3>
+      <Center x="-14.991486" y="-7.514065" />
+      <dbAngle>0.134881</dbAngle>
+      <nType>1</nType>
+    </cell3>
+    <cell4>
+      <Center x="-9.999115" y="-7.507305" />
+      <dbAngle>-0.088725</dbAngle>
+      <nType>1</nType>
+    </cell4>
+    <cell5>
+      <Center x="-4.999664" y="-7.509068" />
+      <dbAngle>-0.069179</dbAngle>
+      <nType>1</nType>
+    </cell5>
+    <cell6>
+      <Center x="-15.021774" y="-12.524639" />
+      <dbAngle>0.302497</dbAngle>
+      <nType>1</nType>
+    </cell6>
+    <cell7>
+      <Center x="-10.036331" y="-12.513680" />
+      <dbAngle>0.002382</dbAngle>
+      <nType>1</nType>
+    </cell7>
+    <cell8>
+      <Center x="-5.028503" y="-12.512207" />
+      <dbAngle>-0.145173</dbAngle>
+      <nType>1</nType>
+    </cell8>
+  </Cells>
+</xmlRoot>

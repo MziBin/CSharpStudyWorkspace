@@ -54,6 +54,7 @@
             this.button2.TabIndex = 2;
             this.button2.Text = "销毁";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label1
             // 
@@ -71,7 +72,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(77, 12);
             this.label2.TabIndex = 3;
-            this.label2.Text = "主线程控制：";
+            this.label2.Text = "次线程控制：";
             // 
             // labNum1
             // 

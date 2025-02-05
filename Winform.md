@@ -22,7 +22,30 @@ Form：主要是事件，经常编辑的
 
 控件对象与窗体容器集合（Controls）
 
-【1】控件和组件的区别：控件是在窗体上可见的。组件是在窗体下面不可见的，也就是不占用窗体的空间。也就是没有可视化的界面。
+#### 2.1.1 Controls
+
+**每个窗口**都会有一个Controls，里面放着所有控件集合。
+
+#### 2.1.2 Control
+
+```
+在.NET 框架中，大多数 Windows Forms 控件都继承自System.Windows.Forms.Control类
+```
+
+可以通过遍历Controls获取每个控件或者容器
+
+```
+//首先判断容器中是否有其他的窗体
+foreach (Control item in Controls)
+{
+    if (item is Button)
+    {
+  
+    }
+}
+```
+
+#### 【1】控件和组件的区别：控件是在窗体上可见的。组件是在窗体下面不可见的，也就是不占用窗体的空间。也就是没有可视化的界面。
 
 【2】按钮控件的使用与代码分析。控件从拖放到显示，经过的步骤：
 
@@ -98,7 +121,14 @@ private void btnMinimize_Click(object sender, EventArgs e)
 
 #### 事件的sender参数
 
-sender就是当前调用的对象，使用时，只需要转换一下。
+sender就是当前调用的对象，使用时，只需要转换一下对应的对象类型。
+
+```
+private void button1_Click(object sender, EventArgs e)
+{
+	Button btn = (Button)sender;
+}
+```
 
 #### 事件的统一关联
 
@@ -165,6 +195,42 @@ AutoScaleMode：Inherit或者None。
 5.1.2 右键菜单
 
 ContextMenuStrip：使用要选择一个窗体菜单
+
+#### 5.1.3 窗体加载关闭触发事件
+
+![1736083986162](image/Winform/1736083986162.png)
+
+5.1.4 双缓冲
+
+在行为分类的DoubleBuffered属性，改为true，就是开启双缓冲。
+
+#### 双缓冲属性
+
+在行为分类的DoubleBuffered属性，改为true，就是开启双缓冲。
+
+#### 窗体刷新
+
+Invalidate()函数，激发一个OnPaint消息
+
+```csharp
+ // 刷新窗体
+    this.Invalidate();
+    // 或者
+    // this.Refresh();
+```
+
+#### 将子窗体设置成非顶级控件,否则无法嵌入
+
+form.TopLevel = false;
+
+#### 窗口置为顶级窗口,但是还能点击其它窗口
+
+loginForm.TopMost = true;
+
+#### 模态窗体，模态窗体不关闭，无法点击其它页面
+
+//不通过Show,通过ShowDialog显示模态窗体，模态窗体不关闭，无法点击其它页面,DialogResult返回的结果，loginForm创建的窗体对象
+DialogResult result = loginForm.ShowDialog();
 
 ### 5.2 CheckBox复选框
 
@@ -234,19 +300,114 @@ ListBox.Item.Add();
 
 ListBox.Item.Clear();
 
+#### 5.7.3 水平滚动条
+
+属性：HorizontalScrollbar
+
 ### 5.8 Time 控件
 
 ### 5.9 ContextMenStrip窗体右键菜单
 
 ### 5.10 ImageList控件
 
-### 5.11 弹窗MessageBox.show()
+### 5.11 弹窗
 
-5.12 打开
+#### 显示MessageBox.show()
+
+#### 打开文件弹窗
+
+```
+// 创建OpenFileDialog对象
+OpenFileDialog openFileDialog = new OpenFileDialog();
+// 设置文件筛选器，这里只允许选择图片文件
+openFileDialog.Filter = "图片文件|*.jpg;*.png;*.bmp";
+// 显示打开文件对话框，用户选择文件后，DialogResult为OK表示选择了文件
+if (openFileDialog.ShowDialog() == DialogResult.OK)
+{
+string path = openFileDialog.FileName;
+//操作
+}
+```
+
+#### 打开文件夹弹窗
+
+```
+// 创建FolderBrowserDialog对象
+FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+// 显示打开文件夹对话框，用户选择文件夹后，DialogResult为OK表示选择了文件夹
+if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+{
+// 获取用户选择的文件夹路径
+string folderPath = folderBrowserDialog.SelectedPath;
+// 可以在这里对选择的文件夹进行操作，比如显示文件夹路径
+ MessageBox.Show($"选择的文件夹路径：{folderPath}");
+}
+```
+
+#### 保存文件弹窗
+
+```
+// 创建SaveFileDialog对象
+SaveFileDialog saveFileDialog = savaFileDialog();
+// 设置文件筛选器，这里只允许保存为JPEG、PNG或BMP格式
+saveFileDialog.Filter = "JPEG图片|*.jpg|PNG图片|*.png|BMP图片|*.bmp";
+// 显示保存文件对话框，用户选择保存路径和文件名后，DialogResult为OK表示确认保存
+if (saveFileDialog.ShowDialog() == DialogResult.OK)
+{
+// 获取用户选择的保存文件格式
+ string fileExtension = System.IO.Path.GetExtension(saveFileDialog.FileName);
+}
+```
+
+### 5.12 pictrueBox图片显示
+
+pictruec存储的是Image类型图片
+
+设置显示图片
+
+pictrue.image;
+
+保存图片
+
+pictrue.image.save()
+
+### 5.13 textBox
+
+多行编辑属性：
+
+**`Multiline`属性** ：这是控制 `TextBox`是否为多行模式的关键属性。当设置为 `true`时，`TextBox`允许用户输入和显示多行文本；设置为 `false`时（默认值），`TextBox`只能显示和输入一行文本。
+
+**`ScrollBars`属性** ：通常在 `Multiline`属性设置为 `true`后，可以设置 `ScrollBars`属性来为 `TextBox`添加滚动条，方便用户查看和编辑超出显示区域的文本。
+
+**`WordWrap`属性** ：该属性用于指定当文本超出 `TextBox`的宽度时是否自动换行。当 `Multiline`为 `true`时，若 `WordWrap`设置为 `true`（默认值），文本会自动换行；若设置为 `false`，文本将在一行中继续显示，直到遇到用户手动输入的换行符或到达文本的末尾，此时可能需要水平滚动条来查看完整文本。
+
+### winform控件的二次开发
+
+#### 利用继承来实现，通过继承其它已有组件，来进行二次开发。
+
+1.新建库项目
+
+2.添加组件类，更改要二次开发的继承
+
+3.添加融合的控件或者组件
+
+4.添加控件方法，编译，导入工具栏，调用。
+
+#### 通过新建控件开发
+
+新建库项目，添加控件开发。
+
+控件开发其实就是给个画布，里面添加各种组合控件。
+
+##### 属性
+
+在画布代码中添加的属性，也会在使用控件时出现。里面的属性也可以通过属性返回控件中的对象。
 
 ### 问题
 
-textBox如何调整高度
+#### textBox和ComboBox如何调整高度
+
+**textBOX更改为多行编辑： `Multiline`属性** ：这是控制 `TextBox`是否为多行模式的关键属性。当设置为 `true`时，`TextBox`允许用户输入和显示多行文本；设置为 `false`时（默认值），`TextBox`只能显示和输入一行文本。
 
 #### NuGet的UI框架如何加入工具栏中
 
@@ -261,6 +422,181 @@ VS菜单栏中：项目＝》刷新项目工具箱
 菜单栏中：工具＝》选项＝》**Windows**窗体设计器＝》常规＝》工具箱=》自动填充工具箱=》True
 
 ![1735805381768](image/Winform/1735805381768.png)
+
+#### 项目引用报错
+
+排查一：查看引用中是否有黄色感叹号，有那么移除掉，重新加载进来，黄色感叹号表示引用没有加载进来。
+
+#### 自定义控件里面的子控件如何操作
+
+方法一：在自定义组件中，将子控件对象设置为public
+
+#### 程序中显示的图形如何能够放大缩小操作
+
+## 多国语言切换
+
+1.主窗体设置
+
+* 选中要进行本地化的 WinForm 窗体或控件，在属性窗口中，将 `Localizable`属性设置为 `True`
+* 将 `Language`属性设置为默认语言，如 `Chinese (Simplified)`
+* 然后设置控件的 `Text`等属性为本地化字符串，如将按钮的 `Text`属性设置为 `确定`，不切换语言时，默认就是本地语言。
+* 创建和编写多语言的资源文件，资源文件命名方式基本就是当前主窗体的名称，后面跟上要添加的语言信息代码。因为后面资源管理器做绑定的时候，就是按照这个命名规则查找的。
+
+2.代码实现
+
+* 获取当前的语言字符串
+* 设置当前线程的语言
+  * 这个一般都会有一个单独的类，对所有的控件和窗体进行遍历切换。
+* 通过ComponentResourceManager(资源管理器类)进行资源绑定。
+* 刷新页面
+
+### 用到的类
+
+#### 获取在setting中的语言字符串，可以是放在其它地方的文本文件或者数据库中值
+
+```
+ //获取上次存储的语言，进行界面的更新
+ string language = Properties.Settings.Default.DefaultLanguage;
+```
+
+#### 切换当前UI文化(就是当前线程的语言)
+
+```
+private void SetCulture(string language)
+        {
+            // 创建 CultureInfo 对象
+            CultureInfo culture = new CultureInfo(language);
+            // 设置当前线程的 UI 文化
+            Thread.CurrentThread.CurrentUICulture = culture;
+            // 设置当前线程的文化
+            Thread.CurrentThread.CurrentCulture = culture;
+            // 重新加载资源和更新 UI 元素
+            LoadLanguage();
+        }
+```
+
+#### 资源类 ComponentResourceManager
+
+从技术上讲，你可以将 `MainForm.zh-CN.resx` 命名为 `zh-CN.resx`，但这可能会带来一些潜在的问题和不便，以下是详细解释：
+
+##### 命名约定和最佳实践
+
+- **常规命名约定**：
+  - 在 Windows 窗体应用程序中，通常将资源文件命名为 `[FormName].[CultureName].resx` 的形式，例如 `MainForm.zh-CN.resx`，这样可以清晰地表示该资源文件是与 `MainForm` 相关联的，并且适用于 `zh-CN`（中文-中国大陆）文化。
+  - 这种命名方式有助于组织和管理资源文件，尤其是当你有多个窗体和多种语言时，方便你快速找到与特定窗体和文化对应的资源文件。
+
+##### 可能的问题
+
+- **资源文件的关联问题**：
+
+  - 如果你将 `MainForm.zh-CN.resx` 改为 `zh-CN.resx`，在使用 `ComponentResourceManager` 时，可能会导致资源查找和应用的混淆。因为 `ComponentResourceManager` 通常会根据资源文件的名称来查找与窗体相关的资源。
+  - 例如，以下代码可能无法正确找到 `zh-CN.resx` 中的资源：
+
+  ```csharp
+  Type formType = typeof(MainForm);
+  ComponentResourceManager resources = new ComponentResourceManager(formType);
+  ```
+
+  - 因为 `ComponentResourceManager` 会期望资源文件的名称与 `formType` 的名称关联，即 `MainForm.zh-CN.resx`。
+
+##### 替代方案和解决方法
+
+- **使用 Neutral Resources Language**：
+
+  - 如果你想简化资源文件的命名，可以使用中性资源语言（Neutral Resources Language）。例如，你可以将默认语言的资源文件命名为 `MainForm.resx`，并在项目属性中设置中性资源语言为默认语言（如英语）。
+  - 对于其他语言，你可以使用 `[CultureName].resx` 的形式，例如 `zh-CN.resx`。
+  - 在 `AssemblyInfo.cs` 文件中，添加以下代码来设置中性资源语言：
+
+  ```csharp
+  [assembly: NeutralResourcesLanguage("en-US")]
+  ```
+
+  - 当使用 `ComponentResourceManager` 时，它会先查找特定文化的资源文件（如 `zh-CN.resx`），如果找不到，会使用中性资源语言的资源文件（`MainForm.resx`）。
+
+##### 示例代码
+
+以下是一个使用中性资源语言的示例：
+
+```csharp
+using System;
+using System.Windows.Forms;
+using System.Threading;
+using System.Globalization;
+using System.ComponentModel;
+
+namespace LanguageSwitchExample
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+            // 初始加载默认语言
+            LoadLanguage();
+        }
+
+        private void LoadLanguage()
+        {
+            // 获取当前线程的 UI 文化
+            CultureInfo culture = Thread.CurrentThread.CurrentUICulture;
+            Type formType = typeof(MainForm);
+            ComponentResourceManager resources = new ComponentResourceManager(formType);
+            // 应用资源到窗体及其子控件
+            ApplyResources(this, resources);
+        }
+
+        private void ApplyResources(Control control, ComponentResourceManager resources)
+        {
+            resources.ApplyResources(control, control.Name);
+            // 递归应用资源到子控件
+            foreach (Control subControl in control.Controls)
+            {
+                ApplyResources(subControl, resources);
+            }
+        }
+
+        private void btnSwitchToChinese_Click(object sender, EventArgs e)
+        {
+            // 切换到中文（中国大陆）
+            ChangeLanguage("zh-CN");
+        }
+
+        private void ChangeLanguage(string language)
+        {
+            // 创建 CultureInfo 对象
+            CultureInfo culture = new CultureInfo(language);
+            // 设置当前线程的 UI 文化
+            Thread.CurrentThread.CurrentUICulture = culture;
+            // 设置当前线程的文化
+            Thread.CurrentThread.CurrentCulture = culture;
+            // 重新加载语言资源
+            LoadLanguage();
+        }
+    }
+}
+```
+
+##### 总结
+
+- 虽然可以将 `MainForm.zh-CN.resx` 改为 `zh-CN.resx`，但遵循 `[FormName].[CultureName].resx` 的命名约定可以更好地组织和管理资源文件，避免资源查找和应用的混淆。
+- 如果你确实想简化命名，可以考虑使用中性资源语言，并在 `AssemblyInfo.cs` 中设置中性资源语言，同时使用 `[CultureName].resx` 的形式命名其他语言的资源文件。
+
+##### 注意事项
+
+- 无论采用哪种命名方式，都要确保资源文件中的资源键与控件的名称和属性相匹配，以便正确应用资源。
+- 在进行语言切换时，确保资源文件包含所需的资源，并且资源键准确无误。
+
+## dll类库，控件的导入
+
+在工具栏中，右键选择项，找到对应的dll文件，添加进来就行。
+
+## 好用的UI工具库
+
+### Emgu.CV.UI
+
+NuGet 包管理器搜索并安装 `Emgu.CV`和 `Emgu.CV.UI`包来实现
+
+Emgu.CV.UI.ImageBox
 
 ## 6.通用代码
 

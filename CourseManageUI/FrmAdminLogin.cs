@@ -107,6 +107,13 @@ namespace CourseManageUI
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            //4.2 设置窗体返回值
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+        //和上面调换一下
+        private void btnLogin_Click1(object sender, EventArgs e)
+        {
             CheckTextRegex(tbUser);
             ////输入验证
             //if (this.txtLoginAccount.Text.Trim().Length == 0)
