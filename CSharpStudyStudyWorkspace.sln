@@ -86,7 +86,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lambda的使用", "Lambda�
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "扩展方法", "扩展方法\扩展方法.csproj", "{CE279817-7F04-4AED-87F6-11D7F9DB3549}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiLanguageDemo", "案例集合\lgbPrivateStudyWorkspace\MultiLanguageDemo\MultiLanguageDemo.csproj", "{EAD0F9B8-862B-4812-843E-374D1A2FA74B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiLanguageDemo2JSON", "案例集合\lgbPrivateStudyWorkspace\MultiLanguage\MultiLanguageDemo2JSON\MultiLanguageDemo2JSON.csproj", "{CE8473CD-DD50-4EBB-B20F-33E60B509D44}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiLanguageDemo", "案例集合\lgbPrivateStudyWorkspace\MultiLanguage\MultiLanguageDemo\MultiLanguageDemo.csproj", "{EAD0F9B8-862B-4812-843E-374D1A2FA74B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -218,6 +220,10 @@ Global
 		{CE279817-7F04-4AED-87F6-11D7F9DB3549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE279817-7F04-4AED-87F6-11D7F9DB3549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE279817-7F04-4AED-87F6-11D7F9DB3549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE8473CD-DD50-4EBB-B20F-33E60B509D44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE8473CD-DD50-4EBB-B20F-33E60B509D44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE8473CD-DD50-4EBB-B20F-33E60B509D44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8473CD-DD50-4EBB-B20F-33E60B509D44}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EAD0F9B8-862B-4812-843E-374D1A2FA74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EAD0F9B8-862B-4812-843E-374D1A2FA74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAD0F9B8-862B-4812-843E-374D1A2FA74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -250,6 +256,7 @@ Global
 		{E8260A47-FFA8-4313-A9A4-0496FDB6AF77} = {4586BA96-A8F2-4C51-A06A-1B0647546FA5}
 		{6EAFE14F-E147-4DC1-8F5E-CC61E10E9D36} = {4586BA96-A8F2-4C51-A06A-1B0647546FA5}
 		{CE279817-7F04-4AED-87F6-11D7F9DB3549} = {4586BA96-A8F2-4C51-A06A-1B0647546FA5}
+		{CE8473CD-DD50-4EBB-B20F-33E60B509D44} = {46C47C80-8A12-4FE8-B86F-67CCB7032A61}
 		{EAD0F9B8-862B-4812-843E-374D1A2FA74B} = {46C47C80-8A12-4FE8-B86F-67CCB7032A61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
