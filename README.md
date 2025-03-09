@@ -1181,8 +1181,6 @@ class Employee{
 
 通过外部win32提供的方法进行读写。
 
-
-
 文件的读取
 
 文件夹的读取
@@ -1511,7 +1509,6 @@ BackgroundWorker：比较老的，控件的异步
 
 定时器有很多，有些是多线程的，有些是在主线程的。比如winform中的Timer控件就是单线程的。
 
-
 ### 以下是对 C# 中 5 种常见线程类型的总结：
 
 #### 1. 主线程
@@ -1552,15 +1549,64 @@ BackgroundWorker：比较老的，控件的异步
 
 异步编程是指当前async标记的函数会在遇到await方法后暂停，不在处理await下面的代码，先跳过这个async标记的函数，去做其他的事情或者其它的方法，不会等着await这个操作，就相当于告诉主线程，我处理这个步骤要很久，你先去干其它的。但是处理完了回来以后，可能不再是前一个线程执行后面的代码了。
 
+注意：在async中标记的函数中，里面没有加await的不会等待，会顺序执行，必须加await才会等待，在lambda表达式中，也要加await才能异步执行，否则也是顺序执行，不会异步。
+
 #### 异步线程和普通多线程的区别：
 
 普通线程是继续下面的流程走，而异步是跳过async中await后面的步骤。等await的执行完成了在执行await下面的。
 
-
 ## 通讯
 
+### 不同线程间的通信
 
+在 C# 的 Windows Forms 和 WPF 应用程序开发中，`InvokeRequired` 和 `Invoke` 是用于跨线程访问 UI 控件的重要机制。由于 UI 控件只能在创建它们的线程（通常是主线程，也称为 UI 线程）上进行操作，当需要在其他线程中更新 UI 控件时，就需要使用这两个方法来确保线程安全。下面详细介绍它们的使用方法和示例。
 
+1. `InvokeRequired` 属性
+
+`InvokeRequired` 是 `Control` 类的一个属性，用于检查当前代码是否在创建控件的线程上执行。如果当前线程不是创建控件的线程，则该属性返回 `true`；否则返回 `false`。
+
+2. `Invoke` 方法
+
+`Invoke` 是 `Control` 类的一个方法，用于在创建控件的线程上执行指定的委托。当 `InvokeRequired` 属性返回 `true` 时，需要使用 `Invoke` 方法来确保在 UI 线程上更新 UI 控件。
+
+```
+// 定义一个委托，用于更新UI元素
+private delegate void UpdateTextBoxDelegate(string text);
+
+private void UpdateTextBox(string text)
+        {
+            if (textBox1.InvokeRequired)
+            {
+                // 如果当前线程不是UI线程，使用Invoke方法调用委托
+                UpdateTextBoxDelegate del = new UpdateTextBoxDelegate(UpdateTextBox);
+                this.Invoke(del, new object[] { text });
+            }
+            else
+            {
+                // 如果当前线程是UI线程，直接更新UI元素
+                textBox1.Text = text;
+            }
+        }
+```
+
+1
+
+### 串口通信
+
+```
+// C# 串口通信示例
+using System.IO.Ports;
+
+SerialPort serialPort = new SerialPort("COM1", 9600);
+serialPort.Open();
+serialPort.Write("AT\r\n"); // 发送指令
+string response = serialPort.ReadLine(); // 读取响应
+serialPort.Close();
+```
+
+1
+
+#### TCP/UDP通信
 
 ## 一些不常用的
 
