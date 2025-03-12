@@ -1,4 +1,4 @@
-﻿# CSharp笔记
+# CSharp笔记
 
 ## 1.代码和项目规范
 
@@ -408,7 +408,7 @@ arr3 = new int[] { 1, 2, 3, 4, 5 };
 
 ### is 判断关键字
 
-可以判断当前 变量 类似 是否属于 这个
+可以判断当前 变量 类似 是否属于 这个类型
 
 ```csharp
 if(ctr is Button)
@@ -1509,6 +1509,142 @@ BackgroundWorker：比较老的，控件的异步
 
 定时器有很多，有些是多线程的，有些是在主线程的。比如winform中的Timer控件就是单线程的。
 
+在 Windows Forms 应用程序中，有多种方式可以实现多线程定时器，下面为你详细介绍常见的几种：
+
+### 1. `System.Timers.Timer`
+
+`System.Timers.Timer` 是一个基于多线程的定时器，它会在单独的线程上触发 `Elapsed` 事件。
+
+#### 示例代码
+
+```csharp
+using System;
+using System.Timers;
+using System.Windows.Forms;
+
+namespace WinFormsTimerExample
+{
+    public partial class Form1 : Form
+    {
+        private System.Timers.Timer timer;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // 初始化定时器
+            timer = new System.Timers.Timer(1000); // 间隔为 1000 毫秒（即 1 秒）
+            timer.Elapsed += Timer_Elapsed;
+            timer.AutoReset = true; // 设置为自动重置
+            timer.Enabled = true;   // 启动定时器
+        }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            // 由于 Elapsed 事件在单独的线程上触发，需要使用 Invoke 方法更新 UI 控件
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    // 更新 UI 操作，例如更新 Label 文本
+                    label1.Text = DateTime.Now.ToString();
+                }));
+            }
+        }
+    }
+}
+```
+
+#### 代码解释
+
+- 首先创建 `System.Timers.Timer` 实例，并设置其间隔时间。
+- 为 `Elapsed` 事件添加处理程序，在该处理程序中执行需要定时执行的操作。
+- 由于 `Elapsed` 事件在单独的线程上触发，而 Windows Forms 控件只能在创建它们的线程上进行更新，因此需要使用 `Invoke` 方法来确保 UI 更新操作在主线程上执行。
+
+### 2. `System.Threading.Timer`
+
+`System.Threading.Timer` 也是一个基于多线程的定时器，它使用回调方法来执行定时任务。
+
+#### 示例代码
+
+```csharp
+using System;
+using System.Threading;
+using System.Windows.Forms;
+
+namespace WinFormsThreadingTimerExample
+{
+    public partial class Form1 : Form
+    {
+        private System.Threading.Timer timer;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // 初始化定时器
+            timer = new System.Threading.Timer(TimerCallback, null, 0, 1000); // 立即启动，间隔为 1000 毫秒（即 1 秒）
+        }
+
+        private void TimerCallback(object state)
+        {
+            // 由于回调方法在单独的线程上执行，需要使用 Invoke 方法更新 UI 控件
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    // 更新 UI 操作，例如更新 Label 文本
+                    label1.Text = DateTime.Now.ToString();
+                }));
+            }
+        }
+    }
+}
+```
+
+#### 代码解释
+
+- 创建 `System.Threading.Timer` 实例，传入回调方法、状态对象、初始延迟时间和间隔时间。
+- 回调方法会在单独的线程上执行，同样需要使用 `Invoke` 方法来更新 UI 控件。
+
+### 3. 使用 `Task.Delay` 和 `async/await`
+
+这种方式结合了 `Task` 和异步编程的特性来实现定时任务。
+
+#### 示例代码
+
+```csharp
+using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WinFormsAsyncTimerExample
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            StartTimerAsync();
+        }
+
+        private async void StartTimerAsync()
+        {
+            while (true)
+            {
+                await Task.Delay(1000); // 延迟 1000 毫秒（即 1 秒）
+                // 更新 UI 操作，无需额外的线程同步，因为 async/await 会在合适的上下文恢复执行
+                label1.Text = DateTime.Now.ToString();
+            }
+        }
+    }
+}
+```
+
+#### 代码解释
+
+- `StartTimerAsync` 方法是一个异步方法，使用 `while (true)` 循环来实现持续的定时任务。
+- `await Task.Delay(1000)` 会暂停当前方法的执行 1 秒，然后继续执行后续代码。
+- 由于 `async/await` 会在合适的上下文恢复执行，因此可以直接在方法中更新 UI 控件，无需额外的线程同步操作。
+
 ### 以下是对 C# 中 5 种常见线程类型的总结：
 
 #### 1. 主线程
@@ -1607,6 +1743,14 @@ serialPort.Close();
 1
 
 #### TCP/UDP通信
+
+## 深拷贝和浅拷贝
+
+在C#中，提供了用于深拷贝和浅拷贝的方法。
+
+深拷贝：相当于复制一个完整的对象给另外一个对象引用。复制的改变不会影响原来的。
+
+浅拷贝：只是拷贝字段和属性，引用类型的改变了，还是会影响原来的
 
 ## 一些不常用的
 

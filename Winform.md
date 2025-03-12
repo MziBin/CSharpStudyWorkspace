@@ -30,6 +30,10 @@ Form：主要是事件，经常编辑的
 
 ```
 在.NET 框架中，大多数 Windows Forms 控件都继承自System.Windows.Forms.Control类
+
+在 C# 的 Windows Forms 编程中，Form 类继承自 Control 类，所以 Form 属于 Control。下面为你详细解释相关内容。
+继承关系说明
+在 .NET 的 Windows Forms 库中，Control 类是所有用户界面控件的基类，它提供了控件的基本功能，像显示、布局、事件处理等。而 Form 类继承自 ContainerControl，ContainerControl 又继承自 ScrollableControl，ScrollableControl 最终继承自 Control。这种继承关系使得 Form 拥有 Control 的所有特性，同时还具备窗体特有的功能，如标题栏、边框、最大化最小化按钮等。
 ```
 
 可以通过遍历Controls获取每个控件或者容器
@@ -168,6 +172,17 @@ private void 窗口的关闭和事件的添加移除_FormClosing(object sender, 
 this.Controls.Add(this.button13);
 ```
 
+1
+
+### 4.控件刷新
+
+控件是双向绑定的，改变控件属性，会自动刷新页面。
+
+* **文本相关属性** ：除了前面提到的 `Text`属性外，`RichTextBox`的 `Text`属性、`TextBox`的 `Text`属性等，当这些属性值改变时，都会自动刷新显示新的文本内容。
+* **可见性属性** ：`Visible`属性用于设置控件是否可见。当更改该属性值时，界面会自动刷新以显示或隐藏控件。例如，`button1.Visible = false;`会隐藏按钮，界面会立即更新显示。
+* **位置和大小属性** ：`Location`属性（用于设置控件的坐标位置）和 `Size`属性（用于设置控件的大小）发生改变时，控件会在界面上自动重新定位和调整大小，触发界面刷新。如 `button1.Location = new Point(100, 100);`或 `button1.Size = new Size(150, 50);`。
+* **颜色属性** ：改变控件的 `BackColor`（背景颜色）、`ForeColor`（前景颜色，如文本颜色）等颜色相关属性，会使控件以新的颜色显示，界面自动刷新以呈现新的外观。
+
 ## 4.UI设计
 
 4.1 外观设计要求
@@ -228,6 +243,9 @@ form.TopLevel = false;
 loginForm.TopMost = true;
 
 #### 模态窗体，模态窗体不关闭，无法点击其它页面
+
+* 当调用 `ShowDialog` 方法来显示一个模态对话框时，当前线程会被阻塞，程序的执行流程会暂停在调用 `ShowDialog` 的地方，直到用户对对话框进行操作并关闭它。这意味着在对话框关闭之前，`ShowDialog` 方法后面的代码不会被执行。
+* 这种阻塞行为是为了确保程序在处理对话框相关的操作时，不会继续执行其他可能会干扰对话框操作或导致逻辑混乱的代码。例如，在用户完成登录对话框的输入并点击确定按钮之前，不应该继续执行需要登录后才能进行的操作。
 
 //不通过Show,通过ShowDialog显示模态窗体，模态窗体不关闭，无法点击其它页面,DialogResult返回的结果，loginForm创建的窗体对象
 DialogResult result = loginForm.ShowDialog();
@@ -336,7 +354,7 @@ ListBox.Item.Clear();
 
 ### 5.8 Timer 控件
 
-该控件运行在UI主线程的，相当于一个定时器，到了一定的时间，主线程就过来执行，类似单片机中的。
+该控件运行在UI主线程的，相当于一个定时器，到了一定的时间，主线程就过来执行，类似单片机中的。定时器执行的过程中，主线程吧是卡着的。
 
 ### 5.9 ContextMenStrip窗体右键菜单
 
@@ -995,11 +1013,11 @@ ControllerSpace放具体的功能实现，页面的按钮中，只需要调用Co
 
 变量声明，包括控件都放在最前面
 
-在构造函数中，重声明的控件和拖拉的做绑定，放在InitializeComponent()后面。
+在构造函数中，重声明的控件和拖拉的做绑定，放在InitializeComponent()后面，下面在是 事件的绑定等等。
 
-下面在是事件的绑定等等。
+最后在是多语言化，防止开始没用重命名，导致多语言化的名称不对。
 
-最后在是多语言化，防止开始没用重命名，导致多语言化的名称不对
+label标签最好关闭自动大小，否则切换多语言时，会自己边大小。
 
 ### 项目通用功能
 
@@ -1020,3 +1038,5 @@ INI文件的读取
 软件加解密
 
 页面实时刷新。
+
+测试时间
