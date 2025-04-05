@@ -48,7 +48,7 @@ namespace demo1
             // 加载并绘制图像
             try
             {
-                Image image = Image.FromFile("example.jpg");
+                Image image = Image.FromFile("E:\\00_WorkCodeSpace\\CSharpStudyWorkspace\\代码案例需要的资源\\上帝俯瞰自己.png");
                 g.DrawImage(image, 10, 150);
                 image.Dispose();
             }
