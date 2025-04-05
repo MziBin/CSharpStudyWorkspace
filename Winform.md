@@ -176,7 +176,18 @@ private void 窗口的关闭和事件的添加移除_FormClosing(object sender, 
 this.Controls.Add(this.button13);
 ```
 
-1
+3
+
+### 3.4 获取所有form窗体对象，winform中的application
+
+当前程序所有打开的窗体引用都会在openForms中，类似窗体form中所有的控件都在controllers中。
+
+`Application.OpenForms` 和 `Form.Controls` 在用途和功能上有明显的区别，并不类似，下面为你详细分析：
+
+#### 用途和功能概述
+
+* **`Application.OpenForms`** ：它是 `Application` 类的一个属性，返回一个 `FormCollection` 对象，该对象包含了当前应用程序中所有打开的顶级窗体。主要用于管理和操作应用程序中所有打开的窗体，比如在某个操作中需要对所有打开的窗体进行统一处理，就可以通过 `Application.OpenForms` 来获取这些窗体对象。
+* **`Form.Controls`** ：这是 `Form` 类的一个属性，返回一个 `ControlCollection` 对象，该对象包含了该窗体上的所有控件，像按钮（`Button`）、文本框（`TextBox`）、标签（`Label`）等。主要用于管理和操作窗体上的各种控件，例如动态添加、移除控件，或者对控件的属性进行修改等。
 
 ### 4.控件刷新
 
@@ -1030,7 +1041,6 @@ UI线程只是这个线程我们自己取的名字，UI线程也叫主线程。
 ### 多线程操作UI控件问题：
 
 多线程操控UI需要InvokeRequired来操作控件，不是同一个线程创建的UI，不能直接操作，必须通过InvokeRequired的Invoke操作。如程序打开时的加载页面。
-
 
 一个 WinForms 程序打开时，默认至少有一个主线程，也称为 UI 线程。
 
