@@ -123,6 +123,8 @@ private void btnMinimize_Click(object sender, EventArgs e)
 
 ```
 
+1
+
 #### 事件的sender参数
 
 sender就是当前调用的对象，使用时，只需要转换一下对应的对象类型。
@@ -133,6 +135,12 @@ private void button1_Click(object sender, EventArgs e)
 	Button btn = (Button)sender;
 }
 ```
+
+#### EventArgs
+
+EventArgs只是一个类
+
+控件中的都是事件要传递的方法，都是类，里面不是事件和委托，只是用来绑定事件和委托的方法。
 
 #### 事件的统一关联
 
@@ -275,6 +283,9 @@ close();关闭。
 
 ### 5.2 CheckBox复选框
 
+`CheckBox` 是 Windows Forms 中常用的一个控件，用于为用户提供复选功能，即用户可以选择或取消选择某个选项。
+
+
 5.2.1 外观中的属性
 
 Checked：默认选中还是不选中
@@ -305,7 +316,9 @@ private void button1_Click(object sender, EventArgs e)
 
 ### 5.4 dataGridView
 
-数据展示控件,要想展示数据，每列的属性都要设置3个，name，data，text。
+    数据展示控件,要想展示数据，每列的属性都要设置3个，name，data，text。
+
+* 具备强大的数据绑定功能，可以直接绑定到数据源（如 `DataTable`、`BindingSource` 等），实现数据的自动更新和同步。当数据源发生变化时，`DataGridView` 会自动更新显示内容。
 
 #### 基本使用：
 
@@ -353,7 +366,7 @@ AlternatingRowsDefoultCellStyle：设置奇数行的样式。
 
 ### 5.7 列表框 ListBox
 
-可以用来展示输出信息
+可以用来展示输出信息，里面的内容一行一行的输出
 
 #### 5.7.1 信息的添加
 
@@ -373,7 +386,42 @@ ListBox.Item.Clear();
 
 ### 5.9 ContextMenStrip窗体右键菜单
 
-### 5.10 ImageList控件
+`ContextMenuStrip` 是 Windows Forms 中用于创建上下文菜单（即右键菜单）的控件。当用户在某个控件上右键单击时，会弹出一个包含一系列操作选项的菜单。
+
+必须绑定到其它控件上。
+
+### 5.10 ImageList组件
+
+`ImageList` 是 Windows Forms 中一个非常有用的控件，它用于管理一组图像，方便在其他控件（如 `ListView`、`TreeView`、`ToolStrip` 等）中重复使用这些图像。下面从创建、添加图像、关联其他控件等方面详细介绍 `ImageList` 的使用。
+
+#### 1. 创建 `ImageList` 控件
+
+在 Visual Studio 的窗体设计器中，你可以从工具箱里把 `ImageList` 控件拖放到窗体上，或者通过代码来创建 `ImageList` 对象。
+
+```
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace ImageListExample
+{
+    public partial class Form1 : Form
+    {
+        private ImageList imageList;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // 创建 ImageList 对象
+            imageList = new ImageList();
+            // 设置图像的尺寸
+            imageList.ImageSize = new Size(32, 32); 
+        }
+    }
+}
+```
+
+要设置存储的图片大小。
 
 ### 5.11 弹窗
 
@@ -509,11 +557,46 @@ pictrue.image.save()
 
 进度条展示
 
-### PropertyGrid
+### 8.PropertyGrid
 
 属性展示控件
 
-### winform控件的二次开发
+`PropertyGrid` 是 Windows Forms 中的一个强大控件，它可以用于显示和编辑对象的属性，为用户提供了一个直观且方便的方式来查看和修改对象的属性值。
+
+### 9.ListView
+
+也是用来展示数据的控件
+
+主要用于以列表形式展示数据。它提供了多种视图模式，可根据不同需求展示和操作数据
+
+### 10.ToolStrip
+
+`ToolStrip` 是 Windows Forms 里一个用于创建工具栏和菜单系统的控件，它具有高度的可定制性和灵活性。下面将从创建、添加项目、事件处理等方面详细介绍 `ToolStrip` 的使用。
+
+ToolStrip可以看成类似软件的顶部的工具栏菜单，比如VS和VSCCode最上面的
+
+### 11.ToolStripContainer
+
+`ToolStripContainer` 是 Windows Forms 中的一个容器控件，它提供了一个用于停靠 `ToolStrip` 控件的区域，并且包含一个中央区域可用于放置其他控件，像 `Form`、`Panel` 等。
+
+ToolStripContainer就相当于VS拖拉顶部的工具栏到左边，右边等停靠。
+
+### 12.MenuStripStatusStripExample
+
+`MenuStrip` 和 `StatusStrip` 是两个常用的控件，分别用于创建菜单栏和状态栏
+
+`MenuStrip`创建VS的主菜单栏容器，如文件，编辑等。
+
+`StatusStrip`用于最下面的状态栏，可以用来显示一些状态信息，比如PLC的链接实时通信，IP地址，中英文等信息。
+
+### 13.ToolTip
+
+`ToolTip` 是 Windows Forms 里的一个控件，其作用是在用户将鼠标指针悬停在某个控件上时，显示一段提示信息。
+
+### 14.RadioButton
+
+* 属于单选控件，在一组 `RadioButton` 中，用户只能选择一个选项。这是因为同一容器内的 `RadioButton` 会自动形成一个单选组，选中一个时，其他的会自动取消选中。
+* 适用于在多个互斥的选项中做出单一选择的场景，例如选择性别（男 / 女）、选择支付方式（现金 / 信用卡 / 支付宝）等。
 
 #### 利用继承来实现，通过继承其它已有组件，来进行二次开发。
 
@@ -565,7 +648,12 @@ namespace CustomControlLibrary
 
 ```
 
-1
+### 15.checkListBox
+
+* 是复选控件，用户可以同时选择多个选项。每个选项前都有一个复选框，用户可根据需求勾选或取消勾选。
+* 适用于需要选择多个选项的场景，例如选择兴趣爱好（阅读、运动、音乐等）、选择要打印的文件列表等。
+* 支持直接绑定数据源，如 `List`、`DataTable` 等。绑定后，`CheckedListBox` 会自动显示数据源中的数据，并且可以方便地获取用户的选择结果。
+
 
 ### 自定义控件加入工具栏
 
@@ -1076,6 +1164,125 @@ GDI+ 是 Windows 操作系统提供的一个图形设备接口（Graphical Devic
 * **`Brush` 类** ：用于填充图形的内部区域，有不同的子类，如 `SolidBrush`（纯色画刷）、`LinearGradientBrush`（线性渐变画刷）、`TextureBrush`（纹理画刷）等。
 * **`Image` 类** ：是处理图像的基类，可用于加载、保存和操作图像。`Bitmap` 类是 `Image` 类的一个子类，专门用于处理位图图像。
 * **`Font` 类** ：用于定义文本的字体、字号、样式（粗体、斜体等）。在绘制文本时，需要使用 `Font` 对象来指定文本的显示格式。
+
+### 基本使用
+
+```
+using System;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace PaintExample
+{
+    public class CustomForm : Form
+    {
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            // 调用基类的 OnPaint 方法,以确保之前的控件的正常绘制
+            base.OnPaint(e);
+
+            // 在这里添加自定义的绘制代码
+            Graphics g = e.Graphics;//画布
+            Pen pen = new Pen(Color.Red, 2);//画笔
+            g.DrawLine(pen, 10, 10, 100, 10);//绘制
+            pen.Dispose();//释放画笔
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            Application.Run(new CustomForm());
+        }
+    }
+}
+```
+
+1
+
+### `PaintEventArgs e` 参数
+
+* **含义** ：`PaintEventArgs` 是 `EventArgs` 的派生类，`e` 这个参数封装了与绘制操作相关的信息。`PaintEventArgs` 类包含了两个重要的属性：`Graphics` 和 `ClipRectangle`。
+* `Graphics` 属性：提供了用于绘制图形、文本和图像的方法和属性，你可以通过它在控件上进行各种绘制操作。
+* `ClipRectangle` 属性：表示需要进行绘制的区域，通常是控件的可见区域。
+* **作用** ：`e` 参数主要用于在事件处理方法中进行实际的绘制操作。你可以使用 `e.Graphics` 来调用各种绘制方法，如 `DrawLine`、`DrawRectangle`、`DrawString` 等。
+
+### 作用区域
+
+那个控件重新定义了OnPaint方法，绘制就会在那个控件中生效。
+
+### 重绘 `Invalidate` 和 `Refresh`
+
+在 C# 的 Windows Forms 编程里，`Invalidate` 和 `Refresh` 方法都和控件的重绘操作相关，但它们在功能和使用上存在差异，下面为你详细介绍。
+
+#### 1. 功能概述
+
+- **`Invalidate` 方法**：该方法的作用是把控件的全部或者部分区域标记成无效。被标记为无效的区域会在系统下次消息循环时触发 `Paint` 事件，从而对该区域进行重绘。不过，`Invalidate` 方法不会马上触发重绘操作，它只是设置了重绘的需求。
+- **`Refresh` 方法**：`Refresh` 方法会强制控件立即重绘自己。它实际上是先调用 `Invalidate` 方法将整个控件区域标记为无效，接着调用 `Update` 方法强制立即处理重绘请求。
+
+#### 2. 详细区别
+
+##### 重绘时机
+
+- **`Invalidate`**：调用 `Invalidate` 方法后，重绘操作不会立刻执行，而是要等到系统的下一次消息循环才会触发 `Paint` 事件来完成重绘。这种延迟重绘的机制能够提升性能，因为系统可以把多个 `Invalidate` 请求合并处理，减少不必要的重绘操作。
+
+```csharp
+using System;
+using System.Windows.Forms;
+
+namespace InvalidateExample
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // 标记整个窗体区域为无效
+            this.Invalidate(); 
+            // 这里不会立即重绘，而是等待消息循环
+            Console.WriteLine("调用 Invalidate 方法");
+        }
+    }
+}
+```
+
+- **`Refresh`**：调用 `Refresh` 方法会马上触发重绘操作，它会强制系统立即处理 `Paint` 事件，更新控件的显示内容。
+
+```csharp
+private void button2_Click(object sender, EventArgs e)
+{
+    // 强制立即重绘整个窗体
+    this.Refresh(); 
+    Console.WriteLine("调用 Refresh 方法，立即重绘");
+}
+```
+
+##### 性能影响
+
+- **`Invalidate`**：由于 `Invalidate` 采用延迟重绘的方式，系统有机会合并多个重绘请求，所以在需要多次重绘控件的场景下，使用 `Invalidate` 方法能减少不必要的重绘，从而提高性能。
+- **`Refresh`**：`Refresh` 方法会立即触发重绘，频繁调用可能会导致性能下降，特别是在需要进行大量重绘操作时。
+
+##### 重绘区域
+
+- **`Invalidate`**：有多种重载形式，可以指定只重绘控件的部分区域，这样能进一步减少重绘的工作量，提高性能。
+
+```csharp
+// 标记指定矩形区域为无效
+Rectangle rect = new Rectangle(10, 10, 100, 100);
+this.Invalidate(rect); 
+```
+
+- **`Refresh`**：总是会重绘整个控件，无法指定只重绘部分区域。
+
+#### 3. 使用场景建议
+
+- **`Invalidate`**：适用于需要多次更新控件状态，但不需要立即看到更新结果的情况。例如，在数据更新时，可以多次调用 `Invalidate` 方法，最后让系统统一处理重绘请求。
+- **`Refresh`**：适用于需要立即看到控件更新结果的情况。例如，在用户点击按钮后需要马上更新界面显示时，可以使用 `Refresh` 方法。
 
 ## 通讯
 
