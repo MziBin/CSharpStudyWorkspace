@@ -1,0 +1,5 @@
+在“工具箱”中，单击“WebView2 Windows 窗体控件”展开选项。
+
+在 Visual Studio 2017 中，默认情况下，“工具箱”中不显示 WebView2。 若要使 WebView2 显示在 工具箱中，请选择 “工具>选项>常规> ”，并将“ 自动填充工具箱” 设置设置为 True。
+
+https://learn.microsoft.com/zh-cn/microsoft-edge/webview2/get-started/winforms

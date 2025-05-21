@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="GB2312"?>
+<xmlRoot>
+  <Matrix>
+    <Center x="15000" y="0" />
+    <Angle>0</Angle>
+    <Row>1</Row>
+    <Col>1</Col>
+  </Matrix>
+  <Cells>
+    <cell0>
+      <Center x="-4.841034" y="-7.520317" />
+      <dbAngle>0.000000</dbAngle>
+      <nType>1</nType>
+    </cell0>
+  </Cells>
+</xmlRoot>
