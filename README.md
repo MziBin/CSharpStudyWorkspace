@@ -25,11 +25,8 @@
 1.2.2 下划线：data_a_0 = 10；data_a_1 = 10； 这个通过下划线来区分有关联性的分组。比如a组的第一个数据
 
 1.2.3 注释：
-
     单行注释：//
-
     文档注释：///
-
     代码折叠：#region  #endregion
 
 12.4 变量声明时，最好赋予初始值，成员变量也是。
@@ -307,7 +304,7 @@ as 关键字是 C# 中用于类型转换的关键词，它允许将一个对象�
 ```csharp
 // 使用 as 进行类型转换
         Dog myDog = myAnimal as Dog;
-  
+
         if (myDog != null) // 检查转换是否成功
         {
             myDog.Bark(); // 调用 Dog 类的方法
@@ -327,6 +324,28 @@ as 关键字是 C# 中用于类型转换的关键词，它允许将一个对象�
 ![1727778192358](image/README/1727778192358.png)
 
 ![1727779347728](image/README/1727779347728.png)
+
+
+
+#### 元组类型
+
+元组类型就是两个数据类型的组合变量，可以是引用类型也可以是值类型的数据
+
+```csharp
+(double, int) t1 = (4.5, 3);
+Console.WriteLine($"Tuple with elements {t1.Item1} and {t1.Item2}.");
+// Output:
+// Tuple with elements 4.5 and 3.
+
+(double Sum, int Count) t2 = (4.5, 3);
+Console.WriteLine($"Sum of {t2.Count} elements is {t2.Sum}.");
+// Output:
+// Sum of 3 elements is 4.5.
+```
+
+
+
+
 
 #### 值类型和引用类型
 
@@ -447,6 +466,12 @@ foreach(a in arr) {}
 while
 
 do while
+
+##### 并行for
+
+Parallel.For();
+
+
 
 #### 数组
 
@@ -622,21 +647,21 @@ class Program
 
 `sizeof` 运算符需要[不安全](https://learn.microsoft.com/zh-cn/dotnet/csharp/language-reference/keywords/unsafe)上下文。 但下表中的表达式在编译时被计算为相应的常数值，并不需要“不安全”的上下文：
 
-| Expression          | 常量值 |
-| ------------------- | ------ |
-| `sizeof(sbyte)`   | 1      |
-| `sizeof(byte)`    | 1      |
-| `sizeof(short)`   | 2      |
-| `sizeof(ushort)`  | 2      |
-| `sizeof(int)`     | 4      |
-| `sizeof(uint)`    | 4      |
-| `sizeof(long)`    | 8      |
-| `sizeof(ulong)`   | 8      |
-| `sizeof(char)`    | 2      |
-| `sizeof(float)`   | 4      |
-| `sizeof(double)`  | 8      |
-| `sizeof(decimal)` | 16     |
-| `sizeof(bool)`    | 1      |
+| Expression        | 常量值 |
+| ----------------- | --- |
+| `sizeof(sbyte)`   | 1   |
+| `sizeof(byte)`    | 1   |
+| `sizeof(short)`   | 2   |
+| `sizeof(ushort)`  | 2   |
+| `sizeof(int)`     | 4   |
+| `sizeof(uint)`    | 4   |
+| `sizeof(long)`    | 8   |
+| `sizeof(ulong)`   | 8   |
+| `sizeof(char)`    | 2   |
+| `sizeof(float)`   | 4   |
+| `sizeof(double)`  | 8   |
+| `sizeof(decimal)` | 16  |
+| `sizeof(bool)`    | 1   |
 
 sizeof是不能够得到string类型所占的内存大小，因为[字符串长度](https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6&spm=1001.2101.3001.7020)是可变的、不定的。
 
@@ -648,13 +673,13 @@ DateTime now2 = Convert.ToDateTime("2021-12-25"); 方法可以将字符串转换
 
 Convert也可以转换数字类型。如Convert.ToLong();
 
-| Convert.ToInt16()    | 转换为整型(short)          |
-| -------------------- | -------------------------- |
-| Convert.ToInt32()    | 转换为整型(int)            |
-| Convert.ToInt64()    | 转换为整型(long)           |
-| Convert.ToChar()     | 转换为字符型(char)         |
-| Convert.ToString()   | 转换为字符串型(string)     |
-| Convert.ToDateTime() | 转换为日期型(datetime)     |
+| Convert.ToInt16()    | 转换为整型(short)      |
+| -------------------- | ----------------- |
+| Convert.ToInt32()    | 转换为整型(int)        |
+| Convert.ToInt64()    | 转换为整型(long)       |
+| Convert.ToChar()     | 转换为字符型(char)      |
+| Convert.ToString()   | 转换为字符串型(string)   |
+| Convert.ToDateTime() | 转换为日期型(datetime)  |
 | Convert.ToDouble()   | 转换为双精度浮点型(double) |
 | Conert.ToSingle()    | 转换为单精度浮点型(float)  |
 
@@ -791,7 +816,7 @@ namespace CSharp高级
         //设置属性的只读特性，可以赋初始值，但是注意，只有自动生成的属性才赋初始值
         public int birthYear { get; } = 2000;
 
-  
+
 
         //设置属性为只可写特性,不行必须有get方法
         //public string Address {set; }
@@ -1302,7 +1327,7 @@ class Employee{
         public string firstName;
         public string middleName;
         public string lastName;
-  
+
         public string this[string index]{
             set{
                 switch(index){
@@ -1324,14 +1349,14 @@ class Employee{
                 }
             }
         }
-  
+
         static void Main(string[] args){
             Employee ee = new Employee();
-  
+
             ee.firstName = "3";
             ee.middleName = "2";
             ee.lastName = "1";
-  	    //通过类似数组得方式访问对象得索引器，给索引器传递值。
+          //通过类似数组得方式访问对象得索引器，给索引器传递值。
             Console.WriteLine("我的名字叫: {0}{1}{2}",ee["a"],ee["b"],ee["c"]);
         }
     }
@@ -1361,6 +1386,15 @@ class Employee{
 “using (QRCodeDetector qRCodeDetector = new QRCodeDetector ())” 是 C# 语言中使用 “using” 语句的写法。
 在 C# 中，“using” 语句用于确保在代码块执行完毕后，正确地释放实现了IDisposable接口的对象所占用的资源。这里创建了一个QRCodeDetector对象，在代码块执行完毕后，会自动调用该对象的Dispose方法来释放资源，以防止资源泄漏。
 这种写法有助于提高代码的可靠性和资源管理的效率，避免手动管理资源可能带来的错误。例如，对于文件操作、数据库连接等需要及时释放资源的场景，“using” 语句非常有用。
+```
+
+### 用法
+
+```csharp
+using(创建的非托管对象在using里面创建) 
+{
+    在中括号中使用，使用玩，会自动释放
+}
 ```
 
 #### using豆包解释
@@ -1446,6 +1480,19 @@ throw new Exception();
 ![1735530747460](image/README/1735530747460.png)
 
 XML格式语法要求
+
+## extern和dllimprot
+
+dllimprot用于导入外部的dll，不是用C#写的，而是用c++写的dll。extern表示该方法是外部实现的。
+
+`extern` 和 `DllImport` 是 “声明外部函数” 的 “缺一不可” 的组合：
+
+* `extern` 负责 “告诉编译器：这个方法在外部实现”；
+* `DllImport` 负责 “告诉编译器：这个外部实现具体在哪个 DLL 里，以及如何调用”。
+
+没有 `DllImport`，`extern` 无法知道函数的具体来源；没有 `extern`，`DllImport` 标记的方法无法被编译器识别为外部实现。
+
+
 
 ## 扩展方法
 
@@ -1589,9 +1636,7 @@ Action<int,string,bool>表示有传入参数int,string,bool无返回值的委托
 ### 事件和委托对比不同点：
 
 第一、事件无法直接赋值，比如事件=null；会出现编译错误，而委托可以。
-
     好处：避免用户对事件直接操作，比如Click事件，如果允许Click=null，会把底层代码清除！可以起到保护。
-
     委托相对太“开放”。
 
 第二、event对象没有invoke（）方法，只能通过使用括号的方式来运行。
@@ -1897,6 +1942,24 @@ namespace WinFormsAsyncTimerExample
 普通线程是继续下面的流程走，而异步是跳过async中await后面的步骤。等await的执行完成了在执行await下面的。
 
 其实普通线程和异步差不多。只是主线程遇到await标记的函数，会跳过，异步线程进入执行。主线程执行其它的，但异步执行完成了，主线程在跳回来执行await后面的语句。
+
+#### 线程安全
+
+1.是线程安全：是指多个线程方位一个方法或者对象时，只能一个线程访问，不会导致多个线程同时访问导致冲突，比如：对象正在其它地方使用System.InvalidOperationException:“对象当前正在其他地方使用。快线程访问UI。
+
+2.不是安全线程：是指对象里面有共享的属性，对象句柄引用，多个线程能够访问，可能会导致线程冲突，导致出现竞争关系，最后给的结果不对了。
+
+##### 案例：不安全线程代码和安全线程代码的案例和报错。
+
+
+
+
+
+
+
+
+
+
 
 ## 通讯
 
@@ -2209,7 +2272,44 @@ class Program
 总之，对于这些非托管资源，建议使用 `using` 语句或手动调用 `Dispose` 方法来确保资源被正确释放。
 
 ```
+private static bool ExecuteSubstCommand(string arguments)
+{
+    try
+    {
+        using (Process process = new Process() )
+        {
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = "subst.exe",
+                Arguments = arguments,
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
 
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"Exit code: {process.ExitCode}, Error: {error}");
+            }
+
+            return true;
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error executing subst: {ex.Message}");
+        return false;
+    }
+}ex.Message}");
+        }
+    }
+}
 ```
 
 1
@@ -2221,6 +2321,8 @@ class Program
 封装变化的，抽取不变的。变化的作为参数，不变的作为方法体。
 
 2.可以仿照若依前后端不分离框架搭建。每个模块都有一个domain(Models)，server，controller。
+
+3.静态方法，最好不要到处用，不方便扩展，应为调用其它方法必须是静态的，或者new的对象。2.访问问题，全是全局的，可能哪里改变了，导致结果不对了，很难排查到。
 
 ### 三层架构设计
 
@@ -2315,6 +2417,38 @@ Form frm=new FrmMain（）；
 3.枚举，也是公共的，定义在类外面，命名空间下面
 
 
+
+## 问题
+
+1. c# - 为什么我们不能在另一个类方法之外使用类方法？
+
+```
+class A
+{
+    B mB = new B();  //this is fine
+    int y = mB.method1(); //this is error;
+
+    public void method2()
+    {
+        int x = mB.method1(); //this is fine
+    }
+}
+
+
+因为构造函数的实例化在字段的后面
+使用类中的方法初始化字段（与声明同时）必须在类的实例上完成。
+
+由于在初始化字段时不允许引用实例本身（参见 C# 语言参考版本 4.0 中的第 10.5.5.2 节和Eric Lippert 的评论）（因为字段初始化发生在任何构造函数执行之前），所以这不是可能的。
+
+如果调用的方法是静态的（因此在类型上声明），那么您可以调用它，因为静态成员在实例成员之前被初始化。
+
+现在，字段初始化的顺序不能保证——这意味着编译器可能决定y在mB. 在这种情况下，如果允许在一个字段上调用一个方法来初始化另一个字段，您会得到一个NullReferenceException. 最好首先避免该问题，并且不允许这种行为。
+```
+
+
+
+
+
 ## VS的使用
 
 ### VS对象浏览器
@@ -2332,3 +2466,5 @@ Ctrl+G：跳转指定代码行
 双击选择。F12跳转到定义。
 
 查看重载：光标在括号中间，Ctrl+Shift+空格键。上下键查看即可。
+
+
