@@ -8,6 +8,31 @@
 
 主窗体对象的创建：在Program类里面：  Application.Run(new FrmMain());
 
+### 1.2 formwork4.8支持的语法版本
+
+支持C#7.3的语法，在高级就不支持了。
+
+
+
+### 1.3 WPF和Winform
+
+wpfhe winform都是使用的.netframework 4.8运行，所有dll库是互通的，只要不涉及到UI相关，因为两个框架的U渲染引擎不一样，所以编写通用的工具dll库最好不要涉及到UI，这样WPF和winform都能用。
+
+| 类库类型          | 通用情况            | 核心原因                                                         |
+| ------------- | --------------- | ------------------------------------------------------------ |
+| **非 UI 基础类库** | ✅ 完全通用          | 依赖.NET Framework/.NET Core/.NET 5 + 的**基础类库（BCL）**，与 UI 框架无关 |
+| **UI 相关类库**   | ❌ 基本不通用（需特殊互操作） | 底层渲染引擎（GDI+ vs DirectX）、控件模型、布局系统完全不同                        |
+
+WPF 和 WinForm 的**UI 体系完全独立**，底层设计理念差异巨大，导致 UI 类库无法直接复用，核心差异点如下：
+
+| 对比维度     | WinForm                                                       | WPF                                                   |
+| -------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| 底层渲染引擎   | GDI+（基于像素绘制，传统 Windows 绘图技术）                                  | DirectX（硬件加速，矢量渲染，支持 3D / 动画）                         |
+| UI 控件模型  | 重量级控件（依赖 Windows 原生句柄`HWND`，每个控件对应一个系统窗口）                     | 轻量级控件（大部分无句柄，基于可视化树`Visual Tree`渲染，支持自定义模板）           |
+| 核心 UI 类库 | `System.Windows.Forms.dll`（控件如`Form`、`Button`、`DataGridView`） | `System.Windows.dll`（控件如`Window`、`Button`、`DataGrid`） |
+| 布局系统     | 基于坐标和锚定（`Anchor`/`Dock`），需手动计算控件位置                            | 基于面板（`Grid`/`StackPanel`/`Canvas`），自动布局，支持响应式         |
+| 数据绑定     | 简单数据绑定（仅支持单向 / 双向绑定，依赖`INotifyPropertyChanged`但体验差）           | 强大的数据绑定（支持多方向、数据模板、值转换器，核心是 MVVM 模式）                  |
+
 ## 2.代码结构简介
 
 Form类通过partial分为两个类。避免混乱，如果觉得还是分的，也可以通过partial在分一个类。
@@ -46,7 +71,7 @@ foreach (Control item in Controls)
 {
     if (item is Button)
     {
-  
+
     }
 }
 ```
@@ -134,7 +159,7 @@ sender就是当前调用的对象，使用时，只需要转换一下对应的�
 ```
 private void button1_Click(object sender, EventArgs e)
 {
-	Button btn = (Button)sender;
+    Button btn = (Button)sender;
 }
 ```
 
@@ -873,29 +898,29 @@ private void SetCulture(string language)
 ##### 可能的问题
 
 - **资源文件的关联问题**：
-
+  
   - 如果你将 `MainForm.zh-CN.resx` 改为 `zh-CN.resx`，在使用 `ComponentResourceManager` 时，可能会导致资源查找和应用的混淆。因为 `ComponentResourceManager` 通常会根据资源文件的名称来查找与窗体相关的资源。
   - 例如，以下代码可能无法正确找到 `zh-CN.resx` 中的资源：
-
+  
   ```csharp
   Type formType = typeof(MainForm);
   ComponentResourceManager resources = new ComponentResourceManager(formType);
   ```
-
+  
   - 因为 `ComponentResourceManager` 会期望资源文件的名称与 `formType` 的名称关联，即 `MainForm.zh-CN.resx`。
 
 ##### 替代方案和解决方法
 
 - **使用 Neutral Resources Language**：
-
+  
   - 如果你想简化资源文件的命名，可以使用中性资源语言（Neutral Resources Language）。例如，你可以将默认语言的资源文件命名为 `MainForm.resx`，并在项目属性中设置中性资源语言为默认语言（如英语）。
   - 对于其他语言，你可以使用 `[CultureName].resx` 的形式，例如 `zh-CN.resx`。
   - 在 `AssemblyInfo.cs` 文件中，添加以下代码来设置中性资源语言：
-
+  
   ```csharp
   [assembly: NeutralResourcesLanguage("en-US")]
   ```
-
+  
   - 当使用 `ComponentResourceManager` 时，它会先查找特定文化的资源文件（如 `zh-CN.resx`），如果找不到，会使用中性资源语言的资源文件（`MainForm.resx`）。
 
 ##### 示例代码
@@ -1061,6 +1086,152 @@ s
 
 6.2.1
 
+### 6.3 非UI线程使用UI控件对象
+
+不要this访问，这样所有控件都全部变成UI线程使用了，那个控件要更新，就用哪个UI控件对象。
+
+通过控件的Invoke或BeginInvoke方法，将操作委托给 UI 线程执行。
+
+基础用法：Invoke（同步）和BeginInvoke（异步）
+ Invoke：阻塞当前线程，等待 UI 线程执行委托（适用于需要获取返回值的场景）。
+ BeginInvoke：不阻塞当前线程，异步在 UI 线程执行委托（适用于无需等待结果的场景）。
+
+方法一
+
+```csharp
+// 检查当前线程是否为UI线程
+    if (textBox.InvokeRequired)
+    {
+        // 非UI线程：委托给UI线程执行
+        textBox.Invoke(new Action<TextBox, string>(UpdateUIText), textBox, text);
+    }
+    else
+    {
+        // UI线程：直接操作
+        textBox.Text = text;
+    }
+```
+
+方法二、简化写法：使用 Lambda 表达式
+
+```csharp
+// 异步更新，无需等待
+    pictureBox1.BeginInvoke(new Action(() =>
+    {
+        // 此处代码将在UI线程执行
+        pictureBox1.Image = new Bitmap("result.png");
+        pictureBox1.Refresh();
+    }));
+
+    // 同步更新，需要等待结果
+    var isSuccess = (bool)button1.Invoke(new Func<bool>(() =>
+    {
+        button1.Text = "操作完成";
+        return true;
+    }));
+```
+
+
+
+### 6.4 多线程
+
+#### 6.4.1 同步锁
+
+1. lock 语句（推荐基础用法）
+   lock 是 C# 中最常用的同步锁，本质是对 Monitor 类的封装，简洁且安全。
+   用法：
+
+```csharp
+// 定义一个专用的锁对象（必须是引用类型，且为静态以保证全局唯一）
+private static readonly object _lockObj = new object();
+private int _sharedValue = 0; // 共享资源
+
+// 多线程访问的方法
+public void IncrementValue()
+{
+    // lock块内的代码同一时间只能被一个线程执行
+    lock (_lockObj)
+    {
+        _sharedValue++; // 临界区：操作共享资源
+        Console.WriteLine($"当前值：{_sharedValue}，线程ID：{Thread.CurrentThread.ManagedThreadId}");
+    }
+}
+```
+
+
+
+注意：
+锁对象必须是 引用类型（如object），且通常声明为 static readonly（**确保所有线程使用同一把锁**）。
+避免使用 string、this 或值类型作为锁对象（string 有字符串驻留机制，可能导致意外的锁冲突；this 可能被外部对象锁定）。
+lock 会自动处理异常：即使发生异常，也会释放锁，避免死锁。
+
+#### 6.4.2 死锁案例
+
+两个锁对象互斥，导致死锁，一般情况下所有线程应该使用一把锁
+
+```csharp
+using System;
+using System.Threading;
+
+class Program
+{
+    // 定义两把锁
+    private static readonly object _lock1 = new object();
+    private static readonly object _lock2 = new object();
+
+    static void Main(string[] args)
+    {
+        // 线程1：先锁_lock1，再等_lock2
+        Thread thread1 = new Thread(() =>
+        {
+            lock (_lock1)
+            {
+                Console.WriteLine("线程1：已获取锁1，等待锁2...");
+                // 模拟处理时间，让线程2有机会先获取锁2
+                Thread.Sleep(100);
+
+                lock (_lock2)
+                {
+                    Console.WriteLine("线程1：成功获取锁2（不会执行）");
+                }
+            }
+        });
+
+        // 线程2：先锁_lock2，再等_lock1
+        Thread thread2 = new Thread(() =>
+        {
+            lock (_lock2)
+            {
+                Console.WriteLine("线程2：已获取锁2，等待锁1...");
+                // 模拟处理时间，让线程1有机会先获取锁1
+                Thread.Sleep(100);
+
+                lock (_lock1)
+                {
+                    Console.WriteLine("线程2：成功获取锁1（不会执行）");
+                }
+            }
+        });
+
+        // 启动线程
+        thread1.Start();
+        thread2.Start();
+
+        // 等待线程（会永久阻塞）
+        thread1.Join();
+        thread2.Join();
+
+        Console.WriteLine("程序结束（不会执行）");
+    }
+}
+```
+
+
+
+
+
+
+
 ## 7.架构，程序的设计
 
 其实开发语法哪些不是最难的，多记下就好了，还是程序的设计，这个搞明白了，其实就差不多很厉害了。
@@ -1082,25 +1253,16 @@ s
 1.一个项目中怎么样确定多少个类？
 
 （1）名词分析法：我们根据项目的名称或者项目中的关键词，进行筛选，往往项目的名称就能给我们提供
-
     非常重要的类名称。实际情况中，我们可能会找到挺多的名称。我们筛选需要的名词是有一个标准的。
-
     我们筛选的名称将来一定要设计成类，也就是看看这个类有没有属性、方法等。
-
     初步找到：双色球、选号器  （随机，无法找到属性、和方法）
-
     双色球：红色球、蓝色球
-
     选号器：红色球池、蓝色球池、存储所选双色球的属性
-
     随机数生成方法、（打印、远程保存）
-
     按照对象职责明确原则，把属性和方法分配给对应的对象（类），同时你还要考虑，这个属性或者
-
     你找的方法，是不是我们需要的（与项目是否相关的）
 
 （2）头脑风暴法：大家一起商量，各抒己见，按照少数服从多数的方法进行筛选。
-
     最后结果，不同人，不同的团队设计出来是有差别的。只要设计合理，就好。
 
 ---
@@ -1110,7 +1272,6 @@ s
 （1）一对一的关系：一个类的对象作为另一个类的属性。数据库中数据表也会有一对一的关系。
 
 （2）一对多的关系：一个类的多个对象作为另一个类的属性，通常这个属性是集合类型（List `<T>`）
-
     Dictionary<k,v>  如果是数据表这种关系体现为“主外键关系”。
 
 ### 7.2 实体类和数据库
@@ -1239,6 +1400,8 @@ this.txtReceiver.Invoke(new Action `<string>`(s => { this.txtReceiver.Text += " 
 
 一个 WinForms 程序打开时，默认至少有一个主线程，也称为 UI 线程。
 
+前面是要改变的控件对象，如果用整个窗体的对象调用，会卡住，那个空军改变，就用那个控件调用Invoke。
+
 主线程主要负责以下工作：
 
 * **界面绘制与更新** ：负责创建和显示 WinForms 应用程序的用户界面，包括窗体、控件等的绘制。当应用程序需要更新界面元素的状态，如更改按钮的文本、显示图片等，都是在主线程中进行的。
@@ -1253,6 +1416,20 @@ this.txtReceiver.Invoke(new Action `<string>`(s => { this.txtReceiver.Text += " 
 前台线程和后台线程的主要区别在于它们对应用程序生命周期的影响。前台线程会阻止应用程序的进程退出，只要有前台线程在运行，应用程序就会继续运行。而后台线程则不会阻止应用程序的进程退出，当所有前台线程都结束时，不管后台线程是否完成，应用程序都会退出。
 
 WinForms 程序的主线程作为前台线程，负责处理用户界面的交互、消息循环以及各种 UI 相关的操作。它的存在确保了应用程序在有用户交互或其他重要任务进行时不会意外退出，只有当主线程结束或者所有前台线程都执行完毕后，应用程序才会正常退出。
+
+#### .NET Framework 4.8 WinForm 中的线程可归纳为：
+
+STA线程就是winform的UI线程，主线程
+
+| 线程类型                  | 线程模型       | 核心职责             | 典型使用场景       |
+| --------------------- | ---------- | ---------------- | ------------ |
+| UI 线程（主线程）            | STA        | 管理 UI 控件、处理消息循环  | 界面绘制、事件响应    |
+| 手动创建的 Thread          | MTA/STA    | 执行独立耗时任务         | 大型文件处理、复杂计算  |
+| 线程池线程                 | MTA        | 执行轻量、短期异步任务      | 网络请求回调、小数据解析 |
+| BackgroundWorker 工作线程 | MTA        | 后台任务执行（配合 UI 回调） | 带进度反馈的耗时操作   |
+| Forms.Timer 关联线程      | STA（UI 线程） | 定时触发 UI 相关逻辑     | 界面定时刷新       |
+
+
 
 ## 13.GDI+
 
@@ -1291,7 +1468,7 @@ protected override void OnPaint(PaintEventArgs e)
 ```csharp
 // 创建一个 800x600 的 Bitmap 对象
         Bitmap bitmap = new Bitmap(800, 600);
-  
+
         // 从 Bitmap 获取 Graphics 对象
         using (Graphics g = Graphics.FromImage(bitmap))
         {
@@ -1439,11 +1616,8 @@ this.Invalidate(rect);
 事件--行为--控件页面上能操作的部分如按钮。
 
 特征：
-
     可视化，可以与用户进行交互
-
     暴露出来的属性和方法、事件 可供开发人员使用
-
     可发布和重用
 
 ### 自定义控件开发
@@ -1484,6 +1658,115 @@ this.UpdateStyles();// 使设置的样式立即生效
 
 4.默认事件：可以设置自定义控件在使用时，双击添加的默认事件。添加到自定义控件的类前面[DefaultEvent("CheckedChanged")]
 
+### 自定义控件如何在visual studio直接运行
+
+#### Visual Studio用户控件测试容器配置方法
+
+用到的：D:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\UserControlTestContainer.exe
+
+工具：外部工具
+
+![ad75ce52-a4cd-47fe-b7b8-dbdc6251d5d9](./images/ad75ce52-a4cd-47fe-b7b8-dbdc6251d5d9.png)
+
+运行以后可以切换调试的控件。
+
+![90d5b094-59ef-4705-9c8f-da01a7ae30f8](./images/90d5b094-59ef-4705-9c8f-da01a7ae30f8.png)
+
+
+
+
+
+## 15.属性
+
+属性的特性描述
+
+```
+常用IDE特性描述
+Browsable
+指定属性是否应该在属性窗口中显示，使用布尔值设置。一般情况下，对于常用的和比较重要的属性设置Browsable为true，否则，设置Browsable为false。
+
+EditorBrowsable
+设置属性在编辑器中的可见性，比如设置在智能提示列表不显示或高级用户才可以看到该属性。
+
+Category
+指定属性在属性浏览器中进行分组显示的类别。该设计时特性帮助可视化编辑器将属性进行逻辑分组。通常分为：外观（Appearance）、行为（Behavior）、布局（Layout）、数据（Data）、操作（Action）、键盘（Key）和鼠标（Mouse）等。如果您安装的是中文版的IDE，则默认情况下中文分类和英文分类是通用的，即设置成“数据”或“Data”类别是等价的。
+
+Description
+设置显示在属性窗口最下面的描述属性功能的文字说明。
+
+DisplayName("地址")
+设置属性显示名称
+
+EditorBrowsable
+          控制属性或事件是否显示于IntelliSense窗口中，表B-1是可能的值。          Never 不显示          Always 显示          Advanced 仅显示于进阶用户模式，进阶者模式可通过Tools|Options|Text Editor| C#中打开
+
+ReadOnly    
+指定属性是否只读。    
+
+Bindable  
+指定属性是否支持Data Binding
+```
+
+
+
+## 16.单元测试
+
+
+
+
+
+## 常用方法
+
+1.触发点击事件
+
+```
+1. 针对 Button 控件（最简单方式）
+Button 控件自带 PerformClick() 方法，可直接触发单击事件：
+csharp
+// 假设按钮名为 button1，直接调用该方法即可触发其 Click 事件
+button1.PerformClick();
+2. 通用方式（适用于所有支持 Click 事件的控件）
+对于 Label、PictureBox 等其他控件，可直接调用其事件处理方法：
+csharp
+// 假设控件的 Click 事件处理方法名为 label1_Click
+// 直接传入 sender 和 e 参数（通常可传 null 或实际控件对象）
+label1_Click(label1, EventArgs.Empty);
+示例：
+csharp
+// 定义 Label 的 Click 事件处理方法
+private void label1_Click(object sender, EventArgs e)
+{
+    MessageBox.Show("Label 被点击了！");
+}
+
+// 在其他地方手动触发该事件
+private void TriggerLabelClick()
+{
+    // 手动调用事件处理方法，触发单击逻辑
+    label1_Click(label1, EventArgs.Empty);
+}
+3. 更规范的通用触发（通过事件委托）
+如果需要严格模拟事件触发流程（例如在自定义控件中），可通过事件委托触发：
+csharp
+// 检查控件的 Click 事件是否有绑定方法，有则触发
+if (pictureBox1.Click != null)
+{
+    // 触发 PictureBox 的 Click 事件
+    pictureBox1.Click(pictureBox1, EventArgs.Empty);
+}
+
+注意事项
+手动触发事件时，需确保事件处理方法已正确绑定到控件的 Click 事件（可在设计器中绑定或通过代码 += 绑定）。
+传入的 sender 参数通常为控件本身，e 可使用 EventArgs.Empty（空参数）。
+对于按钮，优先使用 PerformClick()，这是最符合设计规范的方式。
+```
+
+
+
+
+
+
+
 ## 小技巧
 
 1.窗体关闭按钮：设置字体为webdings，通过输入0，r等字符，就会变成对应的符号。
@@ -1493,7 +1776,7 @@ this.UpdateStyles();// 使设置的样式立即生效
 
 3.想要查看页面中有哪些控件，直接通过查看代码中Designer.cs文件就好，里面是vs生成的窗体代码，能够清晰的查看哪些控件，都列出来字段了的。
 
-4.有时候不知道代码如何编写的思路了，可以看看微软代码如何编写的。借鉴一下
+4.有时候不知道代码类如何编写的思路了，可以看看微软代码如何编写的。借鉴一下
 
 ## 通讯
 
@@ -1615,3 +1898,263 @@ INI文件的读取
 1.要想看一个行业的规范，可以找网上的优秀开源项目，看看他们的框架怎么写的，就大概知道架构规范了。C#中，主要是事件驱动机制。
 
 2.每个方法和类：原子性，每个方法都尽量独立。
+
+3.全局静态的，可以在加载mainform窗体前SplashForm船体里面初始化，比如PLC对象初始化，相机初始化，运动轴回原，蜂鸣器三色灯回原。全局静态的和枚举都单独一个类或者命名空间来写，隔离出来。
+
+4.代码是一步步写出来的，不要一下子先代码架构写的多好，先假设一步步的写一个小功能，后面在优化代码。先把一个项目分为几个模块，在一个个模块分层一个个功能，一步步实现。先不考虑那么多设计模式。先想直接要什么功能列出来，然后怎样一步步实现拆分。先拖出需要交互的控件，完成一个个需要交互的逻辑功能。
+
+5.写代码时，当需要什么小功能或者重复的功能的时候，就将它提取出来，为一个方法封装到自己的DLL库中。这样当你把很多小功能完成了以后，你发现写大功能时，你就只需要调一下小功能就OK了。
+
+6.流程：就是可以单独开一个定时器或者线程，每隔10ms检测一次状态，然后跳转到对应的case执行，执行完就跳回case：0等待。直到下次改变，改变状态时，还得注意当前状态是否为0，为0时才能改变状态，否则等待前一个状态完成，状态之间的数据传递可以通过成员变量或者属性。在状态流程（如状态机）中使用 `switch-case` 时，不同状态（`case`）间的数据传递可以通过**共享数据容器**（如上下文对象、类成员变量）实现。核心思路是：用一个统一的载体存储所有状态需要共享的数据，每个状态（`case`）在处理时读取 / 修改该载体，再切换到下一个状态，从而实现数据在状态间流转。
+
+
+
+### 状态机
+
+1.普通状态机，switch和case。case用枚举，不要用数字，不同步骤就加一个枚举。
+
+
+
+
+
+### 编写线程安全的方法
+
+以编写全局通用的工具类为案例，在实现线程安全时，**全静态类**和**单例模式**均可使用，但需根据具体场景选择，并针对性地处理共享资源的同步。两者的核心差异在于 “状态管理方式（就是全局的字段，多个线程的访问同一个字段）”，因此线程安全的实现方式也略有不同：
+
+#### 一、无状态场景：优先用全静态类（天然线程安全）
+
+如果工具类是**无状态**的（仅包含静态方法，无静态字段，或静态字段是`readonly`常量），全静态类天然线程安全，无需额外同步。
+
+**示例（无状态全静态类）**：
+
+```csharp
+public static class MathUtils
+{
+    // 静态常量（只读，无状态）
+    public static readonly double Pi = 3.1415926;
+
+    // 无状态静态方法（仅依赖输入参数，不修改任何共享状态）
+    public static double CalculateCircleArea(double radius)
+    {
+        return Pi * radius * radius; // 仅读取常量，无共享修改
+    }
+
+    public static int Sum(int a, int b)
+    {
+        return a + b; // 纯计算，无状态依赖
+    }
+}
+```
+
+**线程安全原因**：无状态方法的执行不依赖任何可修改的共享资源，多个线程同时调用不会导致数据冲突。
+
+#### 二、有状态场景：全静态类 vs 单例模式的线程安全实现
+
+若工具类需要维护状态（如计数器、缓存、配置等），则需对共享状态的访问进行同步控制。两种模式的实现方式如下：
+
+##### 1. 有状态全静态类的线程安全实现
+
+全静态类的状态存储在**静态字段**中（所有线程共享），需通过 `lock`、`Interlocked` 等同步静态资源。
+
+**示例（线程安全的有状态全静态类）**：
+
+```csharp
+public static class StaticCounter
+{
+    // 共享的静态状态（需同步）
+    private static int _count = 0;
+    // 同步锁（静态锁对象，确保全局唯一）
+    private static readonly object _lock = new object();
+
+    // 线程安全的增量方法
+    public static int Increment()
+    {
+        // 用lock确保"读取-修改-写入"原子性
+        lock (_lock)
+        {
+            _count++;
+            return _count;
+        }
+
+        // 或用Interlocked（更高效的原子操作）
+        // return Interlocked.Increment(ref _count);
+    }
+
+    // 线程安全的读取方法
+    public static int GetCount()
+    {
+        lock (_lock)
+        {
+            return _count;
+        }
+    }
+}
+```
+
+##### 2. 单例模式的线程安全实现
+
+单例的状态存储在**实例字段**中（唯一实例的状态），需同步实例字段的访问；同时需保证**单例初始化过程**的线程安全（避免多线程创建多个实例）。
+
+**示例（线程安全的单例）**：
+
+```csharp
+public class SingletonCounter : IDisposable
+{
+    // 唯一实例（用Lazy<T>确保延迟初始化和线程安全）
+    private static readonly Lazy<SingletonCounter> _instance = new Lazy<SingletonCounter>(
+        () => new SingletonCounter(), 
+        isThreadSafe: true // 确保Lazy初始化线程安全
+    );
+
+    // 实例状态（共享资源）
+    private int _count = 0;
+    // 同步锁（实例级锁，每个单例一个锁）
+    private readonly object _lock = new object();
+
+    // 私有构造函数（禁止外部实例化）
+    private SingletonCounter() { }
+
+    // 全局访问点
+    public static SingletonCounter GetInstance() => _instance.Value;
+
+    // 线程安全的增量方法
+    public int Increment()
+    {
+        lock (_lock)
+        {
+            _count++;
+            return _count;
+        }
+    }
+
+    // 释放资源（单例可主动释放资源，静态类无法做到）
+    public void Dispose()
+    {
+        // 释放实例持有的资源（如文件流、连接等）
+    }
+}
+```
+
+#### 三、如何选择？
+
+| 场景           | 推荐模式 | 线程安全关键点                                                                                |
+| ------------ | ---- | -------------------------------------------------------------------------------------- |
+| 无状态工具方法      | 全静态类 | 无需同步（天然安全）                                                                             |
+| 有状态且无需扩展     | 全静态类 | 对静态字段用 `lock` 或 `Interlocked` 同步                                                       |
+| 有状态且需要扩展     | 单例模式 | 1. 用 `Lazy<T>` 或双重检查锁定确保初始化安全；  <br>2. 对实例字段用 `lock` 同步；  <br>3. 支持 `IDisposable` 释放资源 |
+| 依赖外部资源（如 IO） | 单例模式 | 单例可通过 `Dispose` 主动释放资源，静态类无法主动释放                                                       |
+
+#### 总结
+
+* **无状态场景**：没有要修改的全局属性变量等，全静态类更简洁，天然线程安全，优先选择。
+* **有状态场景**：
+  * 若功能简单、无需扩展，可用全静态类 + 静态锁同步；
+  * 若需扩展、资源管理（如释放）或更好的测试性，单例模式更合适，需注意初始化安全和实例字段同步。
+    
+    
+
+基本数据类型变量作为参数传递是线程安全的都是独立copy的副本，但是引用类型在参数传递时，多线程传递可能造成线程不安全，有必要加lock。
+
+方法都是线程安全的，只要不在方法里面操作全局属性和变量。如果操作共享的变量，添加lock锁就好。
+
+核心原则：**无论哪种模式，只要存在可修改的共享资源，就必须通过同步机制（`lock`、原子操作等）保证 “读取 - 修改 - 写入” 的原子性**。
+
+
+
+
+
+# 架构新的理解
+
+MVC（controller，view，model）和MVVM（model，view，viewModel）都是UI框架或者是只是一个设计模式，和后台的三层框架是不互相影响的。
+
+1.为什么要分层？
+分层架构是将软件模块按照水平切分的方式分成多个层，一个系统由多层组成，每层由多个模块组成。同时，每层有自己独立的职责，多个层次协同提供完整的功能。
+
+如果系统没有分层，当业务规模增加或流量增大时我们只能针对整体系统来做扩展。分层之后可以很方便的把一些模块抽离出来，独立成一个系统，并且有如下的特点（好处）：
+
+高内聚：分层的设计可以简化系统设计，让不同的层专注做某一模块的事
+低耦合：层与层之间通过接口或API来交互，依赖方不用知道被依赖方的细节
+复用：分层之后可以做到很高的复用
+扩展性：分层架构可以让我们更容易做横向扩展
+分层设计的本质其实就是将复杂问题简单化，基于单一职责原则让每层代码各司其职，基于“高内聚，低耦合”的设计思想实现相关层对象之间的交互。从而，提升代码的可维护性和可扩展性。
+
+2.传统MVC架构？
+当我们实现一个应用程序时（不使用O/R Mapping），我们可能会写特别多数据访问层的代码，从数据库保存、删除、读取对象信息，而这些代码都是重复的。而使用ORM则会大大减少重复性代码。对象关系映射（Object Relational Mapping，简称ORM），主要实现程序对象到关系数据库数据的映射。
+
+优点：关注前后端分离
+缺点：模型层分层太粗，融合了数据处理、业务处理等所有的功能。核心的复杂业务逻辑都放到模型层，导致模型层很乱
+适应场景：后端业务逻辑简单的服务，比如接口直接提供对数据库增删改查
+
+![在这里插入图片描述](./images\7948b1be-a025-49ff-a390-a76de8d17e75.png)
+
+模型M：核心逻辑和数据 --业务模型 （模型，承载数据，对用户提交请求进行计算的模块。分为两类，一类称为数据承载Bean，一类称为业务处理Bean。数据承载Bean是指实体类，专门承载业务数据的，如Student、User等。而业务处理Bean则是指Service或Dao对象，专门用于处理用户提交请求的。
+视图V：展示数据 --用户界面 （视图，为用户提供使用界面，与用户直接进行交互。）
+控制器C：处理用户的输入，解耦 --控制器 （控制器，用于将用户请求转发给相应的Model进行处理，并处理Model的计算结果向用户提供响应。）
+作用：使用mvc的作用是将M和V进行分离，从而使同一个程序可以使用不同的表现形式，其实就是一组数据，可以分别用柱状图或者饼状图来进行展示
+
+3.后端三层架构？
+表现层：controller （通俗讲就是展现给用户的界面，对应项目中的Web层包含Servlet和Controller等。）
+逻辑层：service（也称作领域层，负责系统业务逻辑的处理，对应项目中Service和ServiceImpl等。）
+数据访问层：dao（该层所做事务直接操作数据库，针对数据的增添、删除、修改、更新、查找等，对应项目中的Dao。）
+
+![在这里插入图片描述](./images\a5246464-01b0-4e72-b5c1-769c757cc5da.png)
+
+![在这里插入图片描述](./images\362ed944-161d-4d24-862c-83f6ba08e808.png)
+
+优点：逻辑与数据层分离
+缺点：模型层分层比较粗，核心的复杂业务逻辑都放到模型层，导致模型层很乱
+适应场景：后端业务逻辑简单的服务，比如接口直接提供对数据库增删改查
+4.后端三层架构和MVC的区别与联系？
+
+![在这里插入图片描述](./images\ca45322f-e9f4-48c9-820d-5b132f4e059b.png)
+
+![在这里插入图片描述](./images\85cd00ad-1230-46da-a485-95b25a20a2a2.png)
+
+MVC严格说是三层架构中的UI层，也就是说，MVC把三层架构中的UI层再度进行了分化，分成了控制器、视图、实体三个部分，控制器完成页面逻辑，通过实体来与界面层完成通话，而C层直接与三层中的BLL进行对话。
+
+三层架构和MVC可以共存。三层架构是基于业务逻辑来分的，而MVC是基于页面来分的。MVC是表现模式（Presentation Pattern），三层架构是典型的架构模式（Architecture Pattern）。
+
+三层架构的分层模式是典型的上下关系，上层依赖于下层。但MVC作为表现模式是不存在上下关系的，而是相互协作关系。即使将MVC当作架构模式，也不是分层模式。MVC和三层架构基本没有可比性，是应用于不同领域的技术。
+————————————————
+
+原文链接：https://blog.csdn.net/qq_40519943/article/details/120967287
+
+## 分层架构
+
+分层架构是将软件模块按照水平切分的方式分成多个层，一个系统由多层组成，每层由多个模块组成。同时，每层有自己独立的职责，多个层次协同提供完整的功能。
+
+如果系统没有分层，当业务规模增加或流量增大时我们只能针对整体系统来做扩展。分层之后可以很方便的把一些模块抽离出来，独立成一个系统，并且有如下的特点（好处）：
+
+高内聚：分层的设计可以简化系统设计，让不同的层专注做某一模块的事低耦合：层与层之间通过接口或API来交互，依赖方不用知道被依赖方的细节复用：分层之后可以做到很高的复用扩展性：分层架构可以让我们更容易做横向扩展分层设计的本质其实就是将复杂问题简单化，基于单一职责原则让每层代码各司其职，基于“高内聚，低耦合”的设计思想实现相关层对象之间的交互。从而，提升代码的可维护性和可扩展性。
+
+### 分层
+
+展示还没想好。
+
+BasicSpace：
+
+GlobalSpace：里面一般放置Univers，通用的全局参数
+
+CCDSpace：相机
+
+MotorSpace：运动控制
+
+DBSpace：数据库
+
+FormSpace：窗口
+
+ModelSpace：实体类
+
+CommonSpace：常见的方法
+
+UISpace：自定义控件
+
+## 工具库编写
+
+编写通用工具库，应该将UI部分和逻辑部分分开，不能混合，因为winform和WPF都是基于.NetFramework的框架，但是UI渲染部分使用的不一样，导致UI部分不能共用，但是逻辑部分是共用的。
+
+### 编写规范
+
+通过定义接口，里面提前定义各种需要的功能，然后继承的类实现，如果遇到漏定义的方法，但是有很多实现类了，那么就可以重新定义一个接口，继承前面的接口，后面的实现类就实现最新的接口，还可以继承老的实现类，这样可以少些一些实现方法。
+
+
