@@ -1,0 +1,9 @@
+{
+    "FormTitle": "Main Form",
+    "ButtonText": "Switch Language",
+
+    "MessageBoxMessage": "demo?",
+    "MessageBoxCaption": "warning",
+    "YesButtonText": "Yes",
+    "NoButtonText": "No"
+}

@@ -1,0 +1,9 @@
+{
+    "FormTitle": "主窗体",
+    "ButtonText": "切换语言",
+
+    "MessageBoxMessage": "演示?",
+    "MessageBoxCaption": "警告",
+    "YesButtonText": "确定",
+    "NoButtonText": "取消"
+}
