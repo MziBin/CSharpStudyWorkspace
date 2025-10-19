@@ -233,4 +233,32 @@ namespace WpfApp
 
 WPF的核心是“用XAML画界面，用C#写逻辑”，这种分离模式让界面设计与功能开发可并行进行，适合构建美观且易维护的桌面应用。
 
-> > > > > > > bddbb858899dd95d473a389a4508e595d77658e0
+
+
+
+
+## MVVM开发
+
+开发学习环境
+
+Microsoft Prism：用于支持mvvm的框架
+
+Microsoft Blend SDK：用于设计页面的
+
+必要的知识
+
+MVVM不是所有项目都上的，一些简单的，几个窗体的项目可以就普通的模块结构就好了，不需要过度设计。或者有些项目不适配mvvm，比如游戏开发，就不适合mvvm的架构。
+
+mes等，这些可以用mvvm架构，提高可维护性。
+
+MVVM设计模式详解
+
+MVVM = Model -View-ViewModel
+
+Model：就是数据的对象的抽象集合，用于数据的展示和传递。
+
+View：展示操作的UI界面，用户操作的界面
+
+ViewModel：用于响应View中用户操作UI的操作，比如页面上点击了某个按钮，那么ViewModel中就要有响应View的操作方法。
+
+上面的分层都是针对页面的。
