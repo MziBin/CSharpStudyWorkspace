@@ -179,6 +179,81 @@ EventArgs只是一个类
 
 每个程序都有个管理窗体的类Application，可以获取程序中所有的窗体操作。可以看成程序是一个大窗体，根节点，窗体就是这个程序的泛伸。
 
+### 2.3启动代码
+
+[STAThread]
+
+ C# 中，`[STAThread]` 是一个 **线程模型属性**，用于标记程序的入口点（通常是 `Main` 方法），指定该线程运行在 **单线程单元（Single-Threaded Apartment，简称 STA）** 中。它在 WinForms、WPF 等桌面应用程序中至关重要，尤其是依赖 COM 组件（如 UI 控件）的场景。
+
+一、核心含义：单线程单元（STA）
+
+Windows 系统中，线程模型分为 **STA（单线程单元）** 和 **MTA（多线程单元）**，用于管理 COM 组件（如早期 Windows 控件、ActiveX 组件）的线程安全：
+
+* **STA**：线程拥有独立的 “消息队列”，且 COM 组件在 STA 中创建后，**只能由该线程访问**（其他线程不能直接操作），确保组件的线程安全。
+* **MTA（多线程单元）**：多个线程共享一个单元，COM 组件可被多个线程访问（需组件自身实现线程安全）。
+
+二、非桌面应用的场景
+
+* **控制台应用**：默认使用 MTA 模式，若不涉及 COM 组件，无需 `[STAThread]`；若需访问 STA 类型的 COM 组件（如 Office 互操作），需标记 `[STAThread]`。
+* **[ASP.NET](https://asp.net/) 或服务程序**：通常使用 MTA 模式，无需 `[STAThread]`（这些场景极少依赖 STA 类型的 COM 组件）。
+
+三、总结
+
+`[STAThread]` 是 WinForms 等桌面应用程序的**必备属性**，其核心作用是：
+
+1. 声明主线程运行在 STA 模式下，适配依赖 COM 技术的 UI 控件；
+2. 确保控件绘制、用户交互（如点击、拖放）等功能正常工作；
+3. 避免因线程模型不匹配导致的程序崩溃或异常。
+
+开发 WinForms 程序时，必须在 `Main` 方法上添加 `[STAThread]` 标记，否则可能出现各种 UI 相关的问题。
+
+
+
+<B>Application.EnableVisualStyles();</B>
+
+一、核心作用：让控件显示现代外观
+
+Windows 系统从 XP 开始引入 “视觉样式”（也称 “主题”），支持控件的渐变颜色、阴影效果、圆角等现代设计（例如按钮悬停时的高亮效果、复选框的立体样式）。
+
+`Application.EnableVisualStyles()` 的作用是：**告诉应用程序 “使用系统视觉样式渲染控件”**，使控件外观与当前系统主题保持一致（例如 Windows 10/11 的圆角按钮、浅色 / 深色模式适配）。
+
+二、不调用的后果：控件显示为 “经典样式”
+
+如果不调用 `Application.EnableVisualStyles()`，WinForms 控件会默认使用 **Windows 经典样式**（类似 Windows 98/2000 的外观）：
+
+* 按钮是扁平的灰色，无悬停 / 点击动画；
+* 复选框、单选框是简单的黑白样式；
+* 窗口边框、标题栏也会显示为旧样式，与系统主题脱节。
+  
+  
+
+<B>Application.SetCompatibleTextRenderingDefault(false);</B>
+
+`Application.SetCompatibleTextRenderingDefault(bool)` 是 WinForms 中用于 **设置控件文本渲染模式** 的关键方法，其参数为 `true` 时，会强制应用程序中所有支持的控件使用 **GDI 兼容的文本渲染方式**（而非默认的 GDI+ 方式）。这一设置主要用于解决 **旧版本 .NET 程序的兼容性问题**，具体作用和影响如下：
+
+### 一、核心作用：切换文本渲染引擎
+
+Windows 平台的文本渲染依赖两种底层技术：
+
+* **GDI**：传统图形设备接口（Graphics Device Interface），.NET 1.0/1.1 时代的默认文本渲染方式，渲染逻辑较简单，不支持复杂的抗锯齿和布局优化。
+* **GDI+**：.NET 2.0 及以后引入的增强版图形接口，支持抗锯齿、更精确的文本测量和现代字体渲染，是 WinForms 的默认方式。
+  
+  
+
+使用Application.Run
+
+| 场景       | `Application.Run(主窗体)`                 | `new 窗体().ShowDialog()`                         |
+| -------- | -------------------------------------- | ----------------------------------------------- |
+| 消息循环范围   | 全局（处理所有窗口的消息）                          | 仅当前模态窗口（其他窗口的消息可能无法处理）                          |
+| 窗口关闭后行为  | 主窗体关闭 → 消息循环终止 → 整个应用程序退出              | 模态窗口关闭 → 临时消息循环终止 → 程序直接退出                      |
+| 多窗口支持    | 支持打开多个非模态窗口（共享全局消息循环）                  | 若在模态窗口中打开其他非模态窗口，可能因消息循环限制导致无响应                 |
+| 视觉样式与兼容性 | 通常搭配 `EnableVisualStyles()` 启用现代控件样式   | 若未手动调用 `EnableVisualStyles()`，控件可能显示为旧样式（如灰色按钮） |
+| 应用程序级事件  | 支持 `Application.ApplicationExit` 等全局事件 | 不触发应用程序级事件，无法监听全局状态变化                           |
+
+相当于设置一个窗体为主窗体
+
+
+
 ## 3. WinForm基本使用
 
 ### 绘制机制
@@ -779,6 +854,25 @@ namespace CustomControlLibrary
 * 适用于需要选择多个选项的场景，例如选择兴趣爱好（阅读、运动、音乐等）、选择要打印的文件列表等。
 * 支持直接绑定数据源，如 `List`、`DataTable` 等。绑定后，`CheckedListBox` 会自动显示数据源中的数据，并且可以方便地获取用户的选择结果。
 
+### 16.Chart图表
+
+主要属性
+
+* Chart
+  * ChartAreas
+  * Series
+  * Titles
+  * Legends
+  * Annotations
+
+Series：可以通过设置`Chart`组件`Series`集合属性内的`ChartType`属性来调整图表样式。
+
+
+
+[C# Winform编程（10）Chart图表控件_winform chart-CSDN博客](https://blog.csdn.net/songyulong8888/article/details/134069624)
+
+
+
 ### 自定义控件加入工具栏
 
 1.将库文件的dll文件引用到项目中
@@ -1096,6 +1190,8 @@ s
  Invoke：阻塞当前线程，等待 UI 线程执行委托（适用于需要获取返回值的场景）。
  BeginInvoke：不阻塞当前线程，异步在 UI 线程执行委托（适用于无需等待结果的场景）。
 
+invoke都是执行委托的操作，将要执行的方法和参数都给invoke，invoke会执行该委托。
+
 方法一
 
 ```csharp
@@ -1119,7 +1215,6 @@ updateUIText(Text t, string s)
 }
 
 
->>>>>>> bddbb858899dd95d473a389a4508e595d77658e0
 ```
 
 方法二、简化写法：使用 Lambda 表达式
@@ -1238,7 +1333,15 @@ class Program
 
 
 
+### 6.5 Application.DoEvents()，保持页面响应
 
+`Application.DoEvents()` 是 **单线程场景下临时保持 UI 响应的 “权宜之计”**，通过强制处理消息队列让界面 “不冻结”；但由于存在重入风险和性能问题，**现代应用更推荐用多线程 / 异步编程** 从根本上避免 UI 线程阻塞
+
+
+
+### 6.6不同平台的换行符
+
+System.Environment.NewLine
 
 
 
