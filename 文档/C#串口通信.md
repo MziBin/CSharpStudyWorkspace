@@ -30,7 +30,6 @@ private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs 
     {
         // 等待数据接收完成
         System.Threading.Thread.Sleep(100);
-
     if (serialPort.BytesToRead > 0)
         {
             // 读取数据
@@ -49,6 +48,7 @@ private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs 
         Console.WriteLine($"接收数据失败: {ex.Message}");
         return null;
     }
+
 }
 
 ### 注意
@@ -60,16 +60,104 @@ private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs 
 **一、异步机制说明**
 
 1. **非 UI 线程触发** ：
-
 * `DataReceived` 事件在 **辅助线程** （非 UI 线程）上触发
 * 这意味着不能直接在事件处理程序中操作 UI 控件
-
 1. **异步通知机制** ：
-
 * 当串口接收到数据时，系统会自动触发该事件
 * 无需在主线程中轮询等待数据
-
 1. **与 UI 线程的关系** ：
-
 * 若需要更新 UI，必须通过 `Invoke` 或 `BeginInvoke` 方法
 * 否则会抛出 `InvalidOperationException` 异常
+
+
+
+
+
+## 串口基础使用代码
+
+串口初始化
+
+```csharp
+private void SerialPortMain_Load(object sender, EventArgs e)
+{
+    //获取所有端口
+    string[] ports = System.IO.Ports.SerialPort.GetPortNames();
+    //添加到下拉框
+    cmbPort.Items.AddRange(ports);
+    cmbPort.SelectedIndex = 0;
+
+    //设置默认值
+    cmbBps.SelectedIndex = 1; //9600
+    cmbCheck.SelectedIndex = 0; //None
+    cmbDataBit.SelectedIndex = 1; //8
+    cmbStopBit.SelectedIndex = 0; //1
+
+    //绑定数据接收事件
+    serialPort.DataReceived += SerialPort_DataReceived;
+}
+
+
+private void btnOpenOrClose_Click(object sender, EventArgs e)
+{
+    if(cmbPort.Text != "" && cmbBps.Text != "" && cmbCheck.Text != "" && cmbDataBit.Text != "" && cmbStopBit.Text != "")
+    {
+        if(!serialPort.IsOpen)
+        {
+            serialPort.PortName = cmbPort.Text;
+            serialPort.BaudRate = int.Parse(cmbBps.Text);
+            serialPort.Parity = (Parity)Enum.Parse(typeof(Parity), cmbCheck.Text);
+            serialPort.DataBits = int.Parse(cmbDataBit.Text);
+            serialPort.StopBits = (StopBits)Enum.Parse(typeof(StopBits), cmbStopBit.Text);
+
+            try
+            {
+                serialPort.Open();
+                btnOpenOrClose.Text = "关闭串口";
+                tsslSerialStatus.Text = "串口已打开";
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("打开串口失败：" + ex.Message);
+            }
+        }
+        else
+        {
+            serialPort.Close();
+            btnOpenOrClose.Text = "打开串口";
+            tsslSerialStatus.Text = "串口已关闭";
+        }
+    }
+}
+```
+
+
+
+串口发送数据
+
+```csharp
+private void btnSend_Click(object sender, EventArgs e)
+{
+    if(serialPort.IsOpen)
+    {
+        serialPort.WriteLine(txtSend.Text);
+    }
+}
+```
+
+
+
+串口接收数据
+
+```csharp
+private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+{
+    serialPort.Encoding = Encoding.UTF8;
+    string receivedData = serialPort.ReadExisting();
+    txtRevMessage.Invoke(new Action(() =>
+    {
+        txtRevMessage.AppendText(receivedData);
+    }));
+}
+```
+
+

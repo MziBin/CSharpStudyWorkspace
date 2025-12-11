@@ -765,19 +765,27 @@ ZOOM:比例变大
 
 主要用于以列表形式展示数据。它提供了多种视图模式，可根据不同需求展示和操作数据
 
-### 10.ToolStrip
+### 菜单和工具栏
+
+MenuStrip一般是最上层，比如打开文件夹等。菜单工具
+
+ToolStrip一般第MenuStrip下面，工具栏，比如开始按钮等。
+
+StatusStrip一般最小面，状态菜单。
+
+#### 10.ToolStrip
 
 `ToolStrip` 是 Windows Forms 里一个用于创建工具栏和菜单系统的控件，它具有高度的可定制性和灵活性。下面将从创建、添加项目、事件处理等方面详细介绍 `ToolStrip` 的使用。
 
-ToolStrip可以看成类似软件的顶部的工具栏菜单，比如VS和VSCCode最上面的
+ToolStrip可以看成类似软件的顶部的工具栏菜单，比如VS和VSCCode上面的启动项目，debug工具等。
 
-### 11.ToolStripContainer
+#### 11.ToolStripContainer
 
 `ToolStripContainer` 是 Windows Forms 中的一个容器控件，它提供了一个用于停靠 `ToolStrip` 控件的区域，并且包含一个中央区域可用于放置其他控件，像 `Form`、`Panel` 等。
 
 ToolStripContainer就相当于VS拖拉顶部的工具栏到左边，右边等停靠。
 
-### 12.MenuStripStatusStripExample
+#### 12.MenuStrip和StatusStripExample
 
 `MenuStrip` 和 `StatusStrip` 是两个常用的控件，分别用于创建菜单栏和状态栏
 
