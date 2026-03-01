@@ -4,6 +4,14 @@ TCP需要服务端和客户端
 
 UDP即使客户端又是服务端：相当于发数据，直接使用UDP协议给指定的UDP接收端发数据就行，不需要向TCP提前建立连接。
 
+
+
+## TCP
+
+TCP可以通过socket和TCPClick、TCPLinsten、networkstream进行发送和接收。
+
+
+
 ## UDP代码
 
 UDP 协议本身不分客户端和服务端，但在基于 UDP 的实际应用（如网络通信程序）中，通常会根据角色划分 “客户端” 和 “服务端”。
