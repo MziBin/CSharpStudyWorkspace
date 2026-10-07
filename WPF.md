@@ -20,6 +20,12 @@ WPF是树形结构布局。
 
 wpf和winform都是使用的.netframework 4.8运行（支持C#7.3的语法），所有dll库是互通的，只要不涉及到UI相关，因为两个框架的U渲染引擎不一样，所以编写通用的工具dll库最好不要涉及到UI，这样WPF和winform都能用。
 
+2.winform的UI跟像素相关。wpf的UI是矢量渲染的，跟像素没有关系。
+
+3.WPF底层渲染框架架构
+
+![a7ccc6ed-2f1d-4c10-8fcf-c3d307676880](./images/a7ccc6ed-2f1d-4c10-8fcf-c3d307676880.png)
+
 | 类库类型          | 通用情况            | 核心原因                                                         |
 | ------------- | --------------- | ------------------------------------------------------------ |
 | **非 UI 基础类库** | ✅ 完全通用          | 依赖.NET Framework/.NET Core/.NET 5 + 的**基础类库（BCL）**，与 UI 框架无关 |
@@ -38,6 +44,86 @@ WPF 和 WinForm 的**UI 体系完全独立**，底层设计理念差异巨大，
 2.如何学习WPF
 
 学习WPF中的xaml标签的用法，和WPF的布局，MVVM设计模式。因为WPF和winform的差距就是xaml，其它的都是类似的。
+
+xaml标签中，每个标签都可以看作是一个类，使用时<>创建。
+
+## WPF编译运行底层
+
+![8022a8f8-e681-453a-86c1-890e24f6d57b](./images/8022a8f8-e681-453a-86c1-890e24f6d57b.png)
+
+![9c1b95e2-c0af-40b1-b2bc-f2d2fe9c5401](./images/9c1b95e2-c0af-40b1-b2bc-f2d2fe9c5401.png)
+
+![66c4bab7-08a5-46f0-b327-074436c0219b](./images/66c4bab7-08a5-46f0-b327-074436c0219b.png)
+
+![ae34360b-9787-433d-97db-513feb7e15f1](./images/ae34360b-9787-433d-97db-513feb7e15f1.png)
+
+![0a235fe4-9051-42ea-be50-4f1a750ec101](./images/0a235fe4-9051-42ea-be50-4f1a750ec101.png)
+
+### 1.新建项目文件介绍
+
+![9b19ac94-d40f-4ae9-a6b6-1da14d1c17f4](./images/9b19ac94-d40f-4ae9-a6b6-1da14d1c17f4.png)
+
+properties和app.config都是程序集的一些配置。
+
+App.xaml是程序启动的入口，里面封装了main和设置startupUri第一个窗体的渲染，但是app本身不进行UI设计。当有对所有窗体生效的改变时，可以在App.xaml中添加。
+
+MainWindow.xaml是程序窗体，用于页面Ui的展示渲染。
+
+App.xaml继承Application，MainWindow.xaml继承Window。
+
+在代码中，所有的xaml标签都是代码，可以查看的。Application标签就是app继承的application类。初始化都是通过反射解析的，将xaml中的标记语言解析到代码中的类，属性，事件进行绑定的。
+
+![a11ec243-6d11-4177-a8a5-b6e8872979b6](./images/a11ec243-6d11-4177-a8a5-b6e8872979b6.png)
+
+### 2.WPF的app.xaml介绍
+
+![70706a1d-b0d0-46cf-bc7d-037123d29544](./images/70706a1d-b0d0-46cf-bc7d-037123d29544.png)
+
+![bca67479-01af-46fd-b1a9-a089943cb7de](./images/bca67479-01af-46fd-b1a9-a089943cb7de.png)
+
+![e6623005-02b6-4040-93e7-e3ce96839eac](./images/e6623005-02b6-4040-93e7-e3ce96839eac.png)
+
+### 3.案例
+
+![16691c39-458c-4510-8be5-2b74ea650996](./images/16691c39-458c-4510-8be5-2b74ea650996.png)
+
+![eac5a480-0083-41bb-92b2-5ddb0b30c0f4](./images/eac5a480-0083-41bb-92b2-5ddb0b30c0f4.png)
+
+### 4.生命周期
+
+应用程序application的生命周期，是全局的，所有窗体生效。
+
+![e5581ee3-38ea-4fef-946f-95ee3d94da8c](./images/e5581ee3-38ea-4fef-946f-95ee3d94da8c.png)
+
+
+
+窗体的生命周期
+
+![dda91e2d-4a98-487f-b2bb-a9d77dd169a4](./images/dda91e2d-4a98-487f-b2bb-a9d77dd169a4.png)
+
+
+
+vs中，项目勾选控制台应用程序，这样控制台也会输出。
+
+![e34d4280-54d5-4130-a750-191c1c6aa4be](./images/e34d4280-54d5-4130-a750-191c1c6aa4be.png)
+
+
+
+![cd28bcfb-b67c-4e98-8f57-d6dabbdc5577](./images/cd28bcfb-b67c-4e98-8f57-d6dabbdc5577.png)
+
+
+
+### 总结
+
+1.WPF的整体文件。
+
+2.app程序全局控制管理和全局样式。
+
+3.Window窗体。
+
+4.程序和窗体的生命周期。
+
+明天看11.窗体页面的组成
 
 ## WPF程序架构
 

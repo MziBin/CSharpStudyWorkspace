@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "WpfApp_生命周期/1.0.0": {
+        "runtime": {
+          "WpfApp_生命周期.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "WpfApp_生命周期/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
